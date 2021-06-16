@@ -40,35 +40,36 @@
                         return time.getTime() > Date.now();
                     }
                 },
-                activities: [
-                    {
-                        id: 1,
-                        content: '从192.168.1.1同步数据到192.168.1.100成功',
-                        timestamp: '2018-04-12 20:46',
-                        title: '备份任务同步'
-                    },
-                    {
-                        id: 1,
-                        content: '从192.168.1.1同步数据到192.168.1.100成功',
-                        timestamp: '2018-04-03 20:46',
-                        title: '备份任务同步'
-                    }, {
-                        id: 1,
-                        content: '从192.168.1.1同步数据到192.168.1.100成功',
-                        timestamp: '2018-04-03 20:46',
-                        title: '备份任务同步'
-                    },
-                    {
-                        id: 1,
-                        title: '备份任务同步',
-                        content: '从192.168.1.1同步数据到192.168.1.100成功',
-                        timestamp: '2018-04-03 20:46'
-                    }]
+                activities: []
             };
         },
         methods: {
             OnDate() {
-                console.log(this.pick_date)
+              console.log(this.pick_date)
+              this.activities= [
+                {
+                  id: 1,
+                  content: '从192.168.1.1同步数据到192.168.1.100成功',
+                  timestamp: '2018-04-12 20:46',
+                  title: '备份任务同步'
+                },
+                {
+                  id: 1,
+                  content: '从192.168.1.1同步数据到192.168.1.100成功',
+                  timestamp: '2018-04-03 20:46',
+                  title: '备份任务同步'
+                }, {
+                  id: 1,
+                  content: '从192.168.1.1同步数据到192.168.1.100成功',
+                  timestamp: '2018-04-03 20:46',
+                  title: '备份任务同步'
+                },
+                {
+                  id: 1,
+                  title: '备份任务同步',
+                  content: '从192.168.1.1同步数据到192.168.1.100成功',
+                  timestamp: '2018-04-03 20:46'
+                }]
             }
         }
     };
