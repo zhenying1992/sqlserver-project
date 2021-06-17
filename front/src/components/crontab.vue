@@ -31,12 +31,12 @@
         </el-form-item>
         <el-form-item label="源机器IP" label-width="100px">
           <el-select v-model="form.source_ip" placeholder="请选择机器IP" style="width:220px">
-            <el-option :label="item" :value="item" v-for="item in source_ip_list"></el-option>
+            <el-option :label="item.ip" :value="item.ip" :key="item.id" v-for="item in source_ip_list"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="目的机器IP" label-width="100px">
           <el-select v-model="form.dest_ip" placeholder="请选择机器IP" style="width:220px">
-            <el-option :label="item" :value="item" v-for="item in dest_ip_list"></el-option>
+            <el-option :label="item.ip" :value="item.ip" :key="item.id" v-for="item in dest_ip_list"></el-option>
           </el-select>
         </el-form-item>
       </el-form>
@@ -49,79 +49,85 @@
 </template>
 
 <script>
-export default {
-  name: "crontab",
-  data() {
-    return {
-      adding: false,
-      picker_options: {
-        start: '00:00',
-        step: '00:30',
-        end: '23:00'
-      },
-      value: '',
-      task_list: [],
-      form: {
-        time: '',
-        source_ip: '',
-        dest_ip: ''
-      },
-      source_ip_list: [],
-      dest_ip_list: []
-    }
-  },
-  beforeMount() {
-    this.getTask();
-    this.getIp()
-  },
-  methods: {
-    getTask() {
-      this.task_list = [
-        {
-          'id': 1,
-          'name': '传输备份文件1',
-          'time': '14:10:10',
-          'source_ip': '192.168.1.1',
-          'dest_ip': '172.1.1.1'
+    export default {
+        name: "crontab",
+        data() {
+            return {
+                adding: false,
+                picker_options: {
+                    start: '00:00',
+                    step: '00:30',
+                    end: '23:00'
+                },
+                value: '',
+                task_list: [],
+                form: {
+                    time: '',
+                    source_ip: '',
+                    dest_ip: ''
+                },
+                source_ip_list: [],
+                dest_ip_list: []
+            }
         },
-        {
-          'id': 2,
-          'name': '传输备份文件2',
-          'time': '14:10:10',
-          'source_ip': '192.168.1.1',
-          'dest_ip': '172.1.1.1'
+        beforeMount() {
+            this.getTask();
+            this.getIp()
         },
-        {
-          'id': 1,
-          'name': '传输备份文件2',
-          'time': '14:10:10',
-          'source_ip': '192.168.1.1',
-          'dest_ip': '172.1.1.1'
+        methods: {
+            getTask() {
+                this.task_list = [
+                    {
+                        'id': 1,
+                        'name': '传输备份文件1',
+                        'time': '14:10:10',
+                        'source_ip': '192.168.1.1',
+                        'dest_ip': '172.1.1.1'
+                    },
+                    {
+                        'id': 2,
+                        'name': '传输备份文件2',
+                        'time': '14:10:10',
+                        'source_ip': '192.168.1.1',
+                        'dest_ip': '172.1.1.1'
+                    },
+                    {
+                        'id': 1,
+                        'name': '传输备份文件2',
+                        'time': '14:10:10',
+                        'source_ip': '192.168.1.1',
+                        'dest_ip': '172.1.1.1'
+                    }
+                ]
+            },
+            getIp() {
+                this.source_ip_list = [
+                    {'id': 1, 'ip': '192.168.1.1'},
+                    {'id': 2, 'ip': '10.10.1.1'}
+                ];
+                this.dest_ip_list = [
+                    {'id': 1, 'ip': '192.168.1.1'},
+                    {'id': 2, 'ip': '10.10.1.1'}
+                ];
+            },
+            onDelete() {
+                this.getTask();
+            },
+            newTask() {
+                this.adding = true;
+            },
+            submit() {
+                this.adding = false;
+                console.log(this.form);
+                this.getTask();
+            }
         }
-      ]
-    },
-    getIp() {
-      this.source_ip_list = ['192.168.1.1', '10.10.1.1'];
-      this.dest_ip_list = ['192.168.1.1', '10.10.1.1'];
-    },
-    onDelete() {
-      this.getTask();
-    },
-    newTask() {
-      this.adding = true;
-    },
-    submit() {
-      this.adding = false;
-      console.log(this.form);
-      this.getTask();
     }
-  }
-}
 </script>
 
 <style scoped>
-.div1 {
-  text-align: left;
-  margin: 10px;
-}
+  .div1 {
+    text-align: left;
+    margin: 10px;
+  }
 </style>
