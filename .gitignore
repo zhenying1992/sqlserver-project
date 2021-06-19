@@ -3,6 +3,7 @@ front/node_modules/
 front/npm-debug.log*
 front/yarn-debug.log*
 front/yarn-error.log*
+backend/.pyenv*
 
 # Editor directories and files
 .idea
