@@ -11,17 +11,17 @@
         range-separator="至"
         start-placeholder="开始日期"
         end-placeholder="结束日期"
-        value-format="timestamp"
+        value-format="yyyy-MM-dd HH:mm:ss"
         @change="OnDate"
         :picker-options="pickerOptions">
       </el-date-picker>
     </div>
     <div class="block" style="margin-top: 20px">
       <el-timeline>
-        <el-timeline-item v-for="item in activities" :timestamp="item.timestamp" placement="top"
+        <el-timeline-item v-for="item in activities" :timestamp="item.created_time" placement="top"
                           style="text-align: left" :key="item.id">
           <el-card>
-            <h4>{{item.title}}</h4>
+            <h4>{{item.name}}</h4>
             <span>{{item.content}}</span>
           </el-card>
         </el-timeline-item>
@@ -45,31 +45,13 @@
         },
         methods: {
             OnDate() {
-              console.log(this.pick_date)
-              this.activities= [
-                {
-                  id: 1,
-                  content: '从192.168.1.1同步数据到192.168.1.100成功',
-                  timestamp: '2018-04-12 20:46',
-                  title: '备份任务同步'
-                },
-                {
-                  id: 1,
-                  content: '从192.168.1.1同步数据到192.168.1.100成功',
-                  timestamp: '2018-04-03 20:46',
-                  title: '备份任务同步'
-                }, {
-                  id: 1,
-                  content: '从192.168.1.1同步数据到192.168.1.100成功',
-                  timestamp: '2018-04-03 20:46',
-                  title: '备份任务同步'
-                },
-                {
-                  id: 1,
-                  title: '备份任务同步',
-                  content: '从192.168.1.1同步数据到192.168.1.100成功',
-                  timestamp: '2018-04-03 20:46'
-                }]
+              this.$axios({
+                url: '/log',
+                method: 'post',
+                data: this.pick_date
+              }).then(resp =>{
+                this.activities=resp.data.data;
+              })
             }
         }
     };

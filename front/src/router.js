@@ -7,6 +7,7 @@ import Crontab from '@/components/crontab'
 import Manual from '@/components/manual'
 import Log from '@/components/log'
 import Tool from '@/components/tool'
+import ChangePassword from '@/components/change-password'
 
 Vue.use(Router)
 
@@ -43,6 +44,10 @@ export default new Router({
         {
           path: 'crontab',
           component: Crontab
+        },
+        {
+          path: 'change-password',
+          component: ChangePassword
         }
       ]
     }
