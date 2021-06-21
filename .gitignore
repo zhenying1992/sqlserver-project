@@ -4,6 +4,7 @@ front/npm-debug.log*
 front/yarn-debug.log*
 front/yarn-error.log*
 backend/.pyenv*
+uwsgi.pid
 
 # Editor directories and files
 .idea
