@@ -33,8 +33,16 @@ task_mapping = {
 }
 
 
-def run(task):
-    print(task.name)
+@transaction.atomic
+def get_schedule_task():
+    task_list = CronTask.objects.all()
+    for task in task_list:
+        if is_schedule_in_range(task.schedule):
+            return task
+
+
+def schedule(task):
+    print(f'执行任务: {task.name}')
     func = task_mapping[task.name]
     func(task)
 
@@ -45,11 +53,12 @@ def run(task):
 
 
 while True:
-    with transaction.atomic():
-        task_list = CronTask.objects.all()
-        for task in task_list:
-            if is_schedule_in_range(task.schedule):
-                run(task)
+    try:
+        task = get_schedule_task()
+        if task:
+            schedule(task)
+    except Exception as e:
+        print(f'执行发生错误: {e}')
 
-        print('等待下次轮询\n\n')
+    print('等待下次轮询\n\n')
     time.sleep(60)

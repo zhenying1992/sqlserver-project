@@ -1,14 +1,13 @@
 from django.http import JsonResponse
-from .base import login_require
+from finance.views.base import login_require
+from finance.utils import ping_server
 import json
-import os
 
 
 @login_require
 def serverTestView(request):
     data = json.loads(request.body)
-    ip = data['ip']
-    res = not bool(os.system(f'ping -c 2 -t 1 {ip}'))
+    res = ping_server(data['ip'])
     if res:
         return JsonResponse({'msg': '连接成功', 'status': True})
     return JsonResponse({'msg': '失败', 'status': False})
