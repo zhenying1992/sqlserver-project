@@ -11,3 +11,9 @@ backend:
 worker:
 	cd backend;\
 	python daemon.py
+
+make prod:
+	uwsgi --ini uwsgi.ini
+
+make nginx:
+	nginx -c /Users/houzhenying/Desktop/sqlserver-project/backend/nginx.conf
