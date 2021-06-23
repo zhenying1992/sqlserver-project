@@ -49,7 +49,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="目的机器文件" label-width="100px" v-show="show_dest_path">
-          <el-input  v-model="form.dest_path" style="width: 220px"></el-input>
+          <el-input v-model="form.dest_path" style="width: 220px"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -61,111 +61,119 @@
 </template>
 
 <script>
-export default {
-  name: "crontab",
-  data() {
-    return {
-      adding: false,
-      picker_options: {
-        start: '00:00',
-        step: '00:30',
-        end: '23:00'
-      },
-      value: '',
-      task_list: [],
-      cron_task_list: [],
-      form: {
-        task: '',
-        schedule: '',
-        source_ip: '',
-        source_path: '',
-        dest_ip: '',
-        dest_path: ''
-      },
-      source_ip_list: [],
-      dest_ip_list: []
+    export default {
+        name: "crontab",
+        data() {
+            return {
+                adding: false,
+                picker_options: {
+                    start: '00:00',
+                    step: '00:30',
+                    end: '23:00'
+                },
+                value: '',
+                task_list: [],
+                cron_task_list: [],
+                form: {
+                    task: '',
+                    schedule: '',
+                    source_ip: '',
+                    source_path: '',
+                    dest_ip: '',
+                    dest_path: ''
+                },
+                source_ip_list: [],
+                dest_ip_list: []
+            }
+        },
+        computed: {
+            show_dest_ip: function () {
+                return this.form.task === '传输文件到远程';
+            },
+            show_dest_path: function () {
+                return this.form.task === '传输文件到远程'
+            }
+        },
+        created() {
+            this.getTask();
+            this.getCronTask();
+            this.getIp()
+        },
+        methods: {
+            getTask() {
+                this.$axios({
+                    url: '/tasks',
+                    method: 'get',
+                }).then(resp => {
+                    this.task_list = resp.data.data
+                })
+            },
+            getCronTask() {
+                this.$axios({
+                    url: '/get-cron-task',
+                    method: 'get',
+                }).then(resp => {
+                    this.cron_task_list = resp.data.data
+                });
+            },
+            getIp() {
+                this.$axios({
+                    url: 'server',
+                    method: 'get'
+                }).then(resp => {
+                    this.source_ip_list = resp.data.data;
+                    this.dest_ip_list = resp.data.data;
+                })
+            },
+            onDelete(row) {
+                this.$axios({
+                    url: 'delete-cron-task',
+                    method: 'delete',
+                    data: {id: row.id}
+                }).then(resp => {
+                    this.$message({
+                        showClose: true,
+                        message: '已成功删除',
+                        type: 'success',
+                        duration: 3000
+                    });
+                    this.getCronTask();
+                })
+            },
+            newTask() {
+                this.adding = true;
+            },
+            submit() {
+                this.adding = false;
+                this.$axios({
+                    url: 'create-cron-task',
+                    method: 'post',
+                    data: this.form
+                }).then(resp => {
+                    this.$message({
+                        showClose: true,
+                        message: '新建成功',
+                        type: 'success',
+                        duration: 3000
+                    });
+                    this.form = {
+                        task: '',
+                        schedule: '',
+                        source_ip: '',
+                        source_path: '',
+                        dest_ip: '',
+                        dest_path: ''
+                    };
+                    this.getCronTask();
+                })
+            }
+        }
     }
-  },
-  computed: {
-    show_dest_ip: function() {
-      return this.form.task === '传输文件到远程';
-    },
-    show_dest_path: function () {
-      return this.form.task === '传输文件到远程'
-    }
-  },
-  created() {
-    this.getTask();
-    this.getCronTask();
-    this.getIp()
-  },
-  methods: {
-    getTask() {
-      this.$axios({
-        url: '/tasks',
-        method: 'get',
-      }).then(resp => {
-        this.task_list = resp.data.data
-      })
-    },
-    getCronTask() {
-      this.$axios({
-        url: '/get-cron-task',
-        method: 'get',
-      }).then(resp => {
-        this.cron_task_list = resp.data.data
-      });
-    },
-    getIp() {
-      this.$axios({
-        url: 'server',
-        method: 'get'
-      }).then(resp => {
-        this.source_ip_list = resp.data.data;
-        this.dest_ip_list = resp.data.data;
-      })
-    },
-    onDelete(row) {
-      this.$axios({
-        url: 'delete-cron-task',
-        method: 'delete',
-        data: {id: row.id}
-      }).then(resp => {
-        this.$message({
-          showClose: true,
-          message: '已成功删除',
-          type: 'success',
-          duration: 3000
-        });
-        this.getCronTask();
-      })
-    },
-    newTask() {
-      this.adding = true;
-    },
-    submit() {
-      this.adding = false;
-      this.$axios({
-        url: 'create-cron-task',
-        method: 'post',
-        data: this.form
-      }).then(resp => {
-        this.$message({
-          showClose: true,
-          message: '新建成功',
-          type: 'success',
-          duration: 3000
-        })
-        this.getCronTask();
-      })
-    }
-  }
-}
 </script>
 
 <style scoped>
-.div1 {
-  text-align: left;
-  margin: 10px;
-}
+  .div1 {
+    text-align: left;
+    margin: 10px;
+  }
 </style>

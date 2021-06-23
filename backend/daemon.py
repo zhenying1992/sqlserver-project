@@ -2,12 +2,15 @@ import os
 import django
 import time
 import datetime
+import json
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', "backend.settings")
 
 django.setup()
 from finance.models import CronTask, LogModel
 from django.db import transaction
+from finance.utils import download_file, delete_file
+from finance import constant
 
 
 def is_schedule_in_range(schedule):
@@ -19,11 +22,20 @@ def run_bak_database(task):
 
 
 def run_copy_file(task):
-    pass
+    params = json.loads(task.params)
+
+    download_file(
+        ip=params['source_ip'],
+        username=constant.SSH_USER,
+        file=params['source_path'],
+        local_file=params['dest_path'],
+    )
 
 
 def run_delete_file(task):
-    pass
+    params = json.loads(task.params)
+
+    delete_file(file=params['source_path'])
 
 
 task_mapping = {
@@ -44,21 +56,25 @@ def get_schedule_task():
 def schedule(task):
     print(f'执行任务: {task.name}')
     func = task_mapping[task.name]
-    func(task)
+    try:
+        res = func(task)
 
-    LogModel.objects.create(
-        content='aaaaa',
-        name=task.name
-    )
+        LogModel.objects.create(
+            content=res,
+            name=task.name,
+        )
+    except Exception as ex:
+        print(f'执行发生错误: {ex}')
+        LogModel.objects.create(
+            content=str(ex),
+            name=task.name,
+        )
 
 
 while True:
-    try:
-        task = get_schedule_task()
-        if task:
-            schedule(task)
-    except Exception as e:
-        print(f'执行发生错误: {e}')
+    task = get_schedule_task()
+    if task:
+        schedule(task)
 
     print('等待下次轮询\n\n')
     time.sleep(60)

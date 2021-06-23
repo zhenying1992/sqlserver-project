@@ -12,3 +12,5 @@ TASK_LIST = [
         'name': '删除文件'
     }
 ]
+
+SSH_USER = 'root'
