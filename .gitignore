@@ -5,6 +5,7 @@ front/yarn-debug.log*
 front/yarn-error.log*
 backend/.pyenv*
 backend/finance/migrations*
+backend/__pycache__/*
 uwsgi.pid
 
 # Editor directories and files
