@@ -1,9 +1,11 @@
 <template>
   <div>
+    <el-divider content-position="left"><span style="font-size: 20px">服务器</span></el-divider>
     <el-button type="text" @click="server_test = true">服务器连接测试</el-button>
+    <el-divider content-position="left"><span style="font-size: 20px">数据库</span></el-divider>
     <el-button type="text" @click="database_test = true">数据库连接测试</el-button>
 
-    <el-dialog title="服务器连接测试" :visible.sync="server_test" width="500px"  style="text-align: left">
+    <el-dialog title="服务器连接测试" :visible.sync="server_test" width="500px" style="text-align: left">
       <el-form :model="server_form">
         <el-form-item label="服务器IP">
           <el-select v-model="server_form.ip" placeholder="请选择服务器IP">
@@ -64,104 +66,104 @@
 </template>
 
 <script>
-export default {
-  name: "crontab",
-  data() {
-    return {
-      server_test: false,
-      server_test_start: false,
-      server_test_step: 0,
-      server_test_result: '',
-      database_test: false,
-      database_test_start: false,
-      database_test_step: 0,
-      database_test_result: '',
-      ip_list: [],
-      server_form: {
-        ip: ''
-      },
-      database_form: {
-        ip: '',
-        port: '',
-        username: '',
-        password: ''
-      },
-      status: ''
-    }
-  },
-  created() {
-    this.getIP()
-  },
-  methods: {
-    getIP() {
-      this.$axios({
-        url: 'server',
-        method: 'get'
-      }).then(resp => {
-        this.ip_list = resp.data.data;
-      })
-    },
-    onServerTest() {
-      this.status='wait';
-      this.server_test_step=0;
+    export default {
+        name: "crontab",
+        data() {
+            return {
+                server_test: false,
+                server_test_start: false,
+                server_test_step: 0,
+                server_test_result: '',
+                database_test: false,
+                database_test_start: false,
+                database_test_step: 0,
+                database_test_result: '',
+                ip_list: [],
+                server_form: {
+                    ip: ''
+                },
+                database_form: {
+                    ip: '',
+                    port: '',
+                    username: '',
+                    password: ''
+                },
+                status: ''
+            }
+        },
+        created() {
+            this.getIP()
+        },
+        methods: {
+            getIP() {
+                this.$axios({
+                    url: 'server',
+                    method: 'get'
+                }).then(resp => {
+                    this.ip_list = resp.data.data;
+                })
+            },
+            onServerTest() {
+                this.status = 'wait';
+                this.server_test_step = 0;
 
-      this.server_test_start = true;
-      this.wait(1000).then(() => {
-        this.server_test_step = 1;
-        this.wait(1000).then(() => {
-          this.server_test_step = 2;
-          this.wait(1000).then(() => {
-            this.$axios({
-              url: 'server-test',
-              method: 'post',
-              data: this.server_form
-            }).then(resp => {
-              if (resp.data.status===true){
-                this.server_test_step = 3;
-                this.server_test_result = resp.data.msg;
-                this.status = 'success'
-              } else {
-                this.server_test_step = 3;
-                this.server_test_result = resp.data.msg;
-                this.status='error'
-              }
-            })
-          })
-        })
-      });
-    },
-    onDatabaseTest() {
-      this.status='wait';
-      this.database_test_step=0;
-      this.database_test_start = true;
+                this.server_test_start = true;
+                this.wait(1000).then(() => {
+                    this.server_test_step = 1;
+                    this.wait(1000).then(() => {
+                        this.server_test_step = 2;
+                        this.wait(1000).then(() => {
+                            this.$axios({
+                                url: 'server-test',
+                                method: 'post',
+                                data: this.server_form
+                            }).then(resp => {
+                                if (resp.data.status === true) {
+                                    this.server_test_step = 3;
+                                    this.server_test_result = resp.data.msg;
+                                    this.status = 'success'
+                                } else {
+                                    this.server_test_step = 3;
+                                    this.server_test_result = resp.data.msg;
+                                    this.status = 'error'
+                                }
+                            })
+                        })
+                    })
+                });
+            },
+            onDatabaseTest() {
+                this.status = 'wait';
+                this.database_test_step = 0;
+                this.database_test_start = true;
 
-      this.wait(1000).then(() => {
-        this.database_test_step = 1;
-        this.wait(1000).then(() => {
-          this.database_test_step = 2;
-          this.wait(1000).then(() => {
-            this.$axios({
-              url: 'database-test',
-              method: 'post',
-              data: this.database_form
-            }).then(resp => {
-              this.database_test_step = 3;
-              this.database_test_result = resp.data.msg;
-              if (resp.data.status===true){
-                this.status = 'success'
-              } else {
-                this.status='error'
-              }
-            })
-          })
-        })
-      });
-    },
-    wait(t) {
-      return new Promise((resolve) => setTimeout(resolve, t));
+                this.wait(1000).then(() => {
+                    this.database_test_step = 1;
+                    this.wait(1000).then(() => {
+                        this.database_test_step = 2;
+                        this.wait(1000).then(() => {
+                            this.$axios({
+                                url: 'database-test',
+                                method: 'post',
+                                data: this.database_form
+                            }).then(resp => {
+                                this.database_test_step = 3;
+                                this.database_test_result = resp.data.msg;
+                                if (resp.data.status === true) {
+                                    this.status = 'success'
+                                } else {
+                                    this.status = 'error'
+                                }
+                            })
+                        })
+                    })
+                });
+            },
+            wait(t) {
+                return new Promise((resolve) => setTimeout(resolve, t));
+            }
+        }
     }
-  }
-}
 </script>
 
 <style scoped>

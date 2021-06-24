@@ -23,8 +23,10 @@ def download_file(ip, username, file, local_file):
 
     cmd = f'scp {local_file} {username}@{ip}:{file}'
     p = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    if p:
-        raise Exception(p.stdout + '\n' + p.stderr)
+    res = p.stdout.decode('utf8') + '\n' + p.stderr.decode('utf8')
+    if p.returncode != 0:
+        raise Exception(res)
+    return res
 
 
 def upload_file(ip, username, file, local_file):
@@ -50,8 +52,10 @@ def delete_file(file):
 
     cmd = f'del {file}'
     p = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    if p:
-        raise Exception(p.stdout + '\n' + p.stderr)
+    res = p.stdout.decode('utf8') + '\n' + p.stderr.decode('utf8')
+    if p.returncode != 0:
+        raise Exception(res)
+    return res
 
 
 def delete_remote_file(ip, username, file):

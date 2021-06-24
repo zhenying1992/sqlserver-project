@@ -5,6 +5,8 @@ class LogModel(models.Model):
     created_time = models.DateTimeField(auto_now_add=True)
     content = models.TextField(default='')
     name = models.CharField(max_length=100, default='')
+    status = models.CharField(max_length=20, default='success')
+    type = models.CharField(max_length=20, default='cron')
 
     class Meta:
         db_table = 'log'

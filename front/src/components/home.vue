@@ -28,25 +28,25 @@
             background-color="#545c64"
             text-color="#fff"
             active-text-color="#ffd04b">
-            <el-menu-item index="1">
+            <el-menu-item index="1" style="padding-left: 0">
               <i class="el-icon-menu"></i>
               <span slot="title">数据大盘</span>
             </el-menu-item>
-            <el-submenu index="2">
-              <template slot="title">
-                <i class="el-icon-monitor"></i>
-                <span slot="title">任务配置</span>
+            <el-submenu index="2" style="padding-left: 0">
+              <template slot="title"  style="padding-left: 0">
+                <i class="el-icon-monitor"  style="padding-left: 0"></i>
+                <span slot="title"  style="padding-left: 0">任务配置</span>
               </template>
               <el-menu-item-group>
                 <el-menu-item index="2-1">&nbsp定时任务</el-menu-item>
                 <el-menu-item index="2-2">&nbsp人工设置</el-menu-item>
               </el-menu-item-group>
             </el-submenu>
-            <el-menu-item index="3">
+            <el-menu-item index="3" style="padding-left: 0">
               <i class="el-icon-setting"></i>
               <span slot="title">通用工具</span>
             </el-menu-item>
-            <el-menu-item index="4">
+            <el-menu-item index="4" style="padding-left: 0">
               <i class="el-icon-document"></i>
               <span slot="title">日志中心</span>
             </el-menu-item>
@@ -122,4 +122,11 @@ export default {
 .line {
   height: 80px;
 }
+.el-submenu >>> div {
+    padding-left: 0 !important;
+  }
+
+  .el-menu-item-group >>> li {
+    padding-left: 10px !important;
+  }
 </style>

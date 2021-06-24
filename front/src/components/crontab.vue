@@ -5,7 +5,6 @@
     </div>
 
     <div class="div1">
-      <span>已存在任务:</span>
       <el-table :data="cron_task_list" border style="width:100%">
         <el-table-column prop="id" label="编号" width="50px"></el-table-column>
         <el-table-column prop="name" label="任务类型" width="150px"></el-table-column>

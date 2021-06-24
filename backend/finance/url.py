@@ -1,6 +1,6 @@
 from django.urls import path
 from .views.user import loginView, logoutView, changePasswordView
-from .views.task import taskView, serverView, getCronTaskView, createCronTaskView, deleteCronTaskView, logView
+from .views.task import taskView, serverView, getCronTaskView, createCronTaskView, deleteCronTaskView, logView, executeView
 from .views.tool import serverTestView, databaseTestView
 
 urlpatterns = [
@@ -12,6 +12,7 @@ urlpatterns = [
     path('get-cron-task', getCronTaskView),
     path('create-cron-task', createCronTaskView),
     path('delete-cron-task', deleteCronTaskView),
+    path('execute', executeView),
     path('log', logView),
     path('server-test', serverTestView),
     path('database-test', databaseTestView),

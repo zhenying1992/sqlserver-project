@@ -23,7 +23,7 @@ def run_bak_database(task):
 
 def run_copy_file(task):
     params = json.loads(task.params)
-
+    print('params: ', params)
     download_file(
         ip=params['source_ip'],
         username=constant.SSH_USER,
@@ -63,6 +63,7 @@ def schedule(task):
             content=res,
             name=task.name,
         )
+        print('执行完成\n\n')
     except Exception as ex:
         print(f'执行发生错误: {ex}')
         LogModel.objects.create(
@@ -77,4 +78,4 @@ while True:
         schedule(task)
 
     print('等待下次轮询\n\n')
-    time.sleep(60)
+    time.sleep(5)
