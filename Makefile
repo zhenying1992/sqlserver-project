@@ -4,7 +4,7 @@ front:
 	npm run dev
 
 .PHONY:backend
-backend:
+dev:
 	cd backend;\
 	python manage.py runserver 0:8088
 
@@ -13,7 +13,7 @@ worker:
 	python daemon.py
 
 make prod:
-	uwsgi --ini uwsgi.ini
+	uwsgi --ini conf/uwsgi.ini
 
 make nginx:
-	nginx -c /Users/houzhenying/PycharmProjects/sqlserver-project/nginx.conf
+	nginx -c /Users/houzhenying/PycharmProjects/sqlserver-project/conf/nginx.conf
