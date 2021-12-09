@@ -62,7 +62,7 @@ def executeView(request):
                 local_file=data['dest_path']
             )
         elif task == '删除文件':
-            res = delete_file(data['sorce_file'])
+            res = delete_file(data['source_file'])
 
         log = LogModel(
             content=res,

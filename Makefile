@@ -16,4 +16,4 @@ make prod:
 	uwsgi --ini uwsgi.ini
 
 make nginx:
-	nginx -c /Users/houzhenying/PycharmProjects/sqlserver-project/nginx.conf
+	nginx -c /Users/houzhenying/Desktop/sqlserver-project/nginx.conf

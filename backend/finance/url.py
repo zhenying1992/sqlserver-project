@@ -17,6 +17,3 @@ urlpatterns = [
     path('server-test', serverTestView),
     path('database-test', databaseTestView),
 ]
-
-
-
