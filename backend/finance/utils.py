@@ -2,6 +2,14 @@ import subprocess
 import os
 
 
+def run_cmd(cmd):
+    p = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    stdout, stderr = p.stdout.decode('utf8'), p.stderr.decode('utf8')
+    if p.returncode != 0:
+        raise Exception(stdout + " " + stderr)
+    return stdout
+
+
 def ping_server(ip) -> bool:
     """测试服务器连接性
 
@@ -68,3 +76,12 @@ def delete_remote_file(ip, username, file):
     """
     cmd = f'ssh {username}@{ip} "del {file}"'
     return not bool(os.system(cmd))
+
+
+def get_cpu(ip, username):
+    cmd = ''
+    return not bool(os.system(cmd))
+
+
+def get_disk():
+    return run_cmd('wmic logicaldisk')
