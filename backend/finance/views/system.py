@@ -7,7 +7,7 @@ def cpuView(request):
     return JsonResponse({'data': TASK_LIST})
 
 def diskView(request):
-    return get_disk()
+    return JsonResponse({'data': get_disk(), 'status': "success"})
 
 @login_require
 def memoryView(request):
