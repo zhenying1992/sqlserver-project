@@ -4,7 +4,7 @@ import os
 
 def run_cmd(cmd):
     p = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    stdout, stderr = p.stdout, p.stderr
+    stdout, stderr = p.stdout.decode('utf8'), p.stderr
     if p.returncode != 0:
         raise Exception(stdout + " " + stderr)
     return stdout
