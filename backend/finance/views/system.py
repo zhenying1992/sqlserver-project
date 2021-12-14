@@ -6,7 +6,6 @@ from finance.utils import get_disk
 def cpuView(request):
     return JsonResponse({'data': TASK_LIST})
 
-@login_require
 def diskView(request):
     return get_disk()
 
