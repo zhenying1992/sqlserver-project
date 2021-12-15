@@ -92,7 +92,7 @@ def list_local_cpu() -> List[Cpu]:
             Cpu(
                 name=cpu.Name,
                 percent=cpu.LoadPercentage,
-                core=cpu.NumberCores,
+                core=cpu.NumberOfCores,
                 speed=cpu.MaxClockSpeed,
             )
         )
@@ -113,7 +113,7 @@ def get_local_memory():
 
     return Memory(
         total=int(total / 1024 / 1024),
-        free=int(free / 1024 / 1024),
+        free=int(free / 1024),
         percent=int((total - free) / total * 100),
         swap_free=int(pfu[0].AllocatedBaseSize),
         swap_total=int(pfu[0].AllocatedBaseSize - pfu[0].CurrentUsage)
