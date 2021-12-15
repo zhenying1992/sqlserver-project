@@ -20,7 +20,7 @@ def ping_server(ip) -> bool:
     :param ip:
     :return: bool
     """
-    return not bool(os.system(f'ping -c 2 -n 1000 {ip}'))
+    return not bool(os.system(f'ping -n 2 -w 1000 {ip}'))
 
 
 def download_file(ip, username, file, local_file):
@@ -114,7 +114,7 @@ def get_local_memory():
     return Memory(
         total=int(total / 1024 / 1024),
         free=int(free / 1024),
-        percent=int((total - free) / total * 100),
+        percent=int((total / 1024 - free) / total * 100),
         swap_free=int(pfu[0].AllocatedBaseSize),
         swap_total=int(pfu[0].AllocatedBaseSize - pfu[0].CurrentUsage)
     )
