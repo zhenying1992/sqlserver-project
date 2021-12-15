@@ -83,7 +83,7 @@ def delete_remote_file(ip, username, file):
 
 
 def list_local_cpu() -> List[Cpu]:
-    pythoncom.Coinitialize()
+    pythoncom.CoInitialize()
     c = wmi.WMI()
     cpu_list = []
 
@@ -101,7 +101,7 @@ def list_local_cpu() -> List[Cpu]:
 
 
 def get_local_memory():
-    pythoncom.Coinitialize()
+    pythoncom.CoInitialize()
     c = wmi.WMI()
     cs = c.Win32_ComputerSystem()
     os = c.Win32_OperatingSystem()
@@ -121,7 +121,7 @@ def get_local_memory():
 
 
 def list_local_disk() -> List[Disk]:
-    pythoncom.Coinitialize()
+    pythoncom.CoInitialize()
     c = wmi.WMI()
     disk_list = []
 
