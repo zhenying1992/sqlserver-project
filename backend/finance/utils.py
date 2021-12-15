@@ -107,14 +107,14 @@ def get_local_memory():
     os = c.Win32_OperatingSystem()
     pfu = c.Win32_PageFileUsage()
 
-    total = int(cs[0].TotalPhysicalMemory)
-    free = int(os[0].FreePhysicalMemory)
+    total = int(cs[0].TotalPhysicalMemory) / 1024 / 1024
+    free = int(os[0].FreePhysicalMemory) / 1024
     pythoncom.CoUninitialize()
 
     return Memory(
-        total=int(total / 1024 / 1024),
-        free=int(free / 1024),
-        percent=int((total / 1024 - free) / total * 100),
+        total=int(total),
+        free=int(free),
+        percent=int((total - free) / total * 100),
         swap_free=int(pfu[0].AllocatedBaseSize),
         swap_total=int(pfu[0].AllocatedBaseSize - pfu[0].CurrentUsage)
     )
