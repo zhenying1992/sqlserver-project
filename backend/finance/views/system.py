@@ -1,7 +1,6 @@
 from django.http import JsonResponse
 from finance.views.base import login_require
 from finance.utils import list_local_cpu, list_local_disk, get_local_memory
-import json
 from dataclasses import asdict
 
 

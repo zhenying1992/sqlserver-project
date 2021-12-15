@@ -3,6 +3,7 @@ import os
 from finance.schema import Disk, Cpu, Memory
 from typing import List
 import wmi
+import pythoncom
 
 
 def run_cmd(cmd):
@@ -82,6 +83,7 @@ def delete_remote_file(ip, username, file):
 
 
 def list_local_cpu() -> List[Cpu]:
+    pythoncom.Coinitialize()
     c = wmi.WMI()
     cpu_list = []
 
@@ -94,10 +96,12 @@ def list_local_cpu() -> List[Cpu]:
                 speed=cpu.MaxClockSpeed,
             )
         )
+    pythoncom.CoUninitialize()
     return cpu_list
 
 
 def get_local_memory():
+    pythoncom.Coinitialize()
     c = wmi.WMI()
     cs = c.Win32_ComputerSystem()
     os = c.Win32_OperatingSystem()
@@ -105,6 +109,8 @@ def get_local_memory():
 
     total = int(cs[0].TotalPhysicalMemory)
     free = int(os[0].FreePhysicalMemory)
+    pythoncom.CoUninitialize()
+
     return Memory(
         total=int(total / 1024 / 1024),
         free=int(free / 1024 / 1024),
@@ -115,6 +121,7 @@ def get_local_memory():
 
 
 def list_local_disk() -> List[Disk]:
+    pythoncom.Coinitialize()
     c = wmi.WMI()
     disk_list = []
 
@@ -133,4 +140,5 @@ def list_local_disk() -> List[Disk]:
                         percent=int((total - free) / total * 100)
                     )
                 )
+    pythoncom.CoUninitialize()
     return disk_list
