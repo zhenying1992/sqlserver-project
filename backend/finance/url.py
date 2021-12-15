@@ -3,7 +3,7 @@ from .views.user import loginView, logoutView, changePasswordView
 from .views.task import taskView, serverView, getCronTaskView, createCronTaskView, deleteCronTaskView, logView,\
     executeView
 from .views.tool import serverTestView, databaseTestView
-from .views.system import diskView, cpuView, memoryView
+from .views.system import diskView, cpuView, memoryView, sysView
 
 urlpatterns = [
     path('login', loginView),
@@ -21,4 +21,5 @@ urlpatterns = [
     path('cpu', cpuView),
     path('memory', memoryView),
     path('disk', diskView),
+    path('sys', sysView),
 ]

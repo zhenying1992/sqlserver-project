@@ -25,3 +25,9 @@ class Disk:
     use: int  # 使用量
     free: int  # 空闲量
     percent: int  # 使用百分比
+
+
+@dataclass
+class Sys:
+    process: int  # 进程数量
+    uptime: str  # 启动时间

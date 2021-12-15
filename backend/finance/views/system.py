@@ -1,6 +1,6 @@
 from django.http import JsonResponse
 from finance.views.base import login_require
-from finance.utils import list_local_cpu, list_local_disk, get_local_memory
+from finance.utils import list_local_cpu, list_local_disk, get_local_memory, get_sys_info
 from dataclasses import asdict
 
 
@@ -9,7 +9,7 @@ def cpuView(request):
     return JsonResponse(
         {
             'status': 'success',
-            'data': [asdict(cpu) for cpu in list_local_cpu()]
+            'data': [asdict(cpu) for cpu in list_local_cpu()],
         }
     )
 
@@ -19,7 +19,7 @@ def memoryView(request):
     return JsonResponse(
         {
             'status': 'success',
-            'data': asdict(get_local_memory())
+            'data': asdict(get_local_memory()),
         }
     )
 
@@ -29,6 +29,16 @@ def diskView(request):
     return JsonResponse(
         {
             'status': 'success',
-            'data': [asdict(disk) for disk in list_local_disk()]
+            'data': [asdict(disk) for disk in list_local_disk()],
+        }
+    )
+
+
+@login_require
+def sysView(request):
+    return JsonResponse(
+        {
+            'status': 'success',
+            'data': asdict(get_sys_info()),
         }
     )

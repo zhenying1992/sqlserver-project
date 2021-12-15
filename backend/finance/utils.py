@@ -1,6 +1,7 @@
 import subprocess
 import os
-from finance.schema import Disk, Cpu, Memory
+import datetime
+from finance.schema import Disk, Cpu, Memory, Sys
 from typing import List
 import wmi
 import pythoncom
@@ -142,3 +143,19 @@ def list_local_disk() -> List[Disk]:
                 )
     pythoncom.CoUninitialize()
     return disk_list
+
+
+def get_sys_info():
+    pythoncom.CoInitialize()
+    c = wmi.WMI()
+    sys = c.Win32_OperatingSystem()
+
+    process = sys[0].NumberOfProcesses
+    last_up_time = datetime.datetime.strptime(sys[0].LastBootupTime, "%Y%m%d%H%M%s")
+    uptime = datetime.datetime.now() - last_up_time
+
+    pythoncom.CoUninitialize()
+    return Sys(
+        process=process,
+        uptime=str(uptime)
+    )
