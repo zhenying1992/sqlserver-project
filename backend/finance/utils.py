@@ -1,5 +1,8 @@
 import subprocess
 import os
+from finance.schema import Disk, Cpu, Memory
+from typing import List
+import wmi
 
 
 def run_cmd(cmd):
@@ -78,10 +81,56 @@ def delete_remote_file(ip, username, file):
     return not bool(os.system(cmd))
 
 
-def get_cpu(ip, username):
-    cmd = ''
-    return not bool(os.system(cmd))
+def list_local_cpu() -> List[Cpu]:
+    c = wmi.WMI()
+    cpu_list = []
+
+    for cpu in c.Win32_Processor():
+        cpu_list.append(
+            Cpu(
+                name=cpu.Name,
+                percent=cpu.LoadPercentage,
+                core=cpu.NumberCores,
+                speed=cpu.MaxClockSpeed,
+            )
+        )
+    return cpu_list
 
 
-def get_disk():
-    return run_cmd('wmic logicaldisk')
+def get_local_memory():
+    c = wmi.WMI()
+    cs = c.Win32_ComputerSystem()
+    os = c.Win32_OperatingSystem()
+    pfu = c.Win32_PageFileUsage()
+
+    total = int(cs[0].TotalPhysicalMemory)
+    free = int(os[0].FreePhysicalMemory)
+    return Memory(
+        total=int(total / 1024 / 1024),
+        free=int(free / 1024 / 1024),
+        percent=int((total - free) / total * 100),
+        swap_free=int(pfu[0].AllocatedBaseSize),
+        swap_total=int(pfu[0].AllocatedBaseSize - pfu[0].CurrentUsage)
+    )
+
+
+def list_local_disk() -> List[Disk]:
+    c = wmi.WMI()
+    disk_list = []
+
+    for physical_disk in c.Win32_DiskDrive():
+        for partition in physical_disk.associators("Win32_DiskDriveToDiskPartition"):
+            for logical_disk in partition.associators("Win32_LogicalDiskToPartition"):
+                total = int(logical_disk.Size)
+                free = int(logical_disk.FreeSpace)
+
+                disk_list.append(
+                    Disk(
+                        name=logical_disk.Caption,
+                        total=int(total / 1024 / 1024 / 1024),
+                        use=int((total - free) / 1024 / 1024 / 1024),
+                        free=int(free / 1024 / 1024 / 1024),
+                        percent=int((total - free) / total * 100)
+                    )
+                )
+    return disk_list
