@@ -20,7 +20,7 @@ def ping_server(ip) -> bool:
     :param ip:
     :return: bool
     """
-    return not bool(os.system(f'ping -c 2 -t 1 {ip}'))
+    return not bool(os.system(f'ping -c 2 -n 1000 {ip}'))
 
 
 def download_file(ip, username, file, local_file):

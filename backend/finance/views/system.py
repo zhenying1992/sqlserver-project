@@ -24,6 +24,7 @@ def memoryView(request):
     )
 
 
+@login_require
 def diskView(request):
     return JsonResponse(
         {
