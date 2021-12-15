@@ -151,7 +151,7 @@ def get_sys_info():
     sys = c.Win32_OperatingSystem()
 
     process = sys[0].NumberOfProcesses
-    last_up_time = datetime.datetime.strptime(sys[0].LastBootupTime[:14], "%Y%m%d%H%M%s")
+    last_up_time = datetime.datetime.strptime(sys[0].LastBootupTime[:14], "%Y%m%d%H%M%S")
     uptime = datetime.datetime.now() - last_up_time
 
     pythoncom.CoUninitialize()
