@@ -1,6 +1,6 @@
 from django.http import JsonResponse
 from finance.views.base import login_require
-from finance.utils import ping_server
+from finance.utils import ping_server, ping_sqlserver
 import json
 
 
@@ -15,8 +15,7 @@ def serverTestView(request):
 
 @login_require
 def databaseTestView(request):
-    data = json.loads(request.body)
-    res = True
+    res = ping_sqlserver(ip='192.168.0.199', dbuser='sa', password='111111')
     if res:
         return JsonResponse({'msg': '连接成功', 'status': True})
     return JsonResponse({'msg': '失败', 'status': False})

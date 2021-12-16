@@ -5,6 +5,7 @@ from finance.schema import Disk, Cpu, Memory, Sys
 from typing import List
 import wmi
 import pythoncom
+import pymssql
 
 
 def run_cmd(cmd):
@@ -22,6 +23,13 @@ def ping_server(ip) -> bool:
     :return: bool
     """
     return not bool(os.system(f'ping -n 2 -w 1000 {ip}'))
+
+
+def ping_sqlserver(ip, dbuser, password):
+    try:
+        return pymssql.connect(host=ip, user=dbuser, password=password)
+    except Except:
+        return false
 
 
 def download_file(ip, username, file, local_file):
