@@ -24,6 +24,8 @@ class CronTask(models.Model):
 
 class Server(models.Model):
     ip = models.CharField(max_length=100)
+    type = models.CharField(max_length=100)
+    desc = models.CharField(max_length=100)
 
     class Meta:
         db_table = 'server'
