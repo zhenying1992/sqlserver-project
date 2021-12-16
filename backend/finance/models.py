@@ -26,6 +26,12 @@ class Server(models.Model):
     ip = models.CharField(max_length=100)
     type = models.CharField(max_length=100)
     desc = models.CharField(max_length=100)
+    username = models.CharField(max_length=100)
+    password = models.CharField(max_length=100)
 
     class Meta:
         db_table = 'server'
+
+
+def get_db_server() -> Server:
+    return Server.objects.get(type='database')
