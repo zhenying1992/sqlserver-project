@@ -1,8 +1,7 @@
 from django.http import JsonResponse
 from finance.views.base import login_require
-from finance.constant import TASK_LIST, SSH_USER
+from finance.constant import TASK_LIST
 from finance.models import Server, CronTask, LogModel
-from finance.utils import download_file, delete_file
 import json
 
 
@@ -45,42 +44,6 @@ def deleteCronTaskView(request):
     task = CronTask.objects.get(id=data['id'])
     task.delete()
     return JsonResponse({'data': 'success'})
-
-
-@login_require
-def executeView(request):
-    data = json.loads(request.body)
-    task = data['task']
-    try:
-        if task == '备份数据库到本地':
-            pass
-        elif task == '传输文件到远程':
-            res = download_file(
-                ip=data['source_ip'],
-                username=SSH_USER,
-                file=data['source_path'],
-                local_file=data['dest_path']
-            )
-        elif task == '删除文件':
-            res = delete_file(data['source_file'])
-
-        log = LogModel(
-            content=res,
-            name=task,
-            status='success',
-            type='once'
-        )
-        log.save()
-    except Exception as ex:
-        log = LogModel(
-            content=str(ex),
-            name=task,
-            status='failed',
-            type='once'
-        )
-        log.save()
-        return JsonResponse({'data': str(ex), 'status': False})
-    return JsonResponse({'data': '成功', 'status': True})
 
 
 @login_require

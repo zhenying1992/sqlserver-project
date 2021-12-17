@@ -14,7 +14,6 @@ urlpatterns = [
     path('get-cron-task', getCronTaskView),
     path('create-cron-task', createCronTaskView),
     path('delete-cron-task', deleteCronTaskView),
-    path('execute', executeView),
     path('log', logView),
     path('server-test', serverTestView),
     path('database-test', databaseTestView),
