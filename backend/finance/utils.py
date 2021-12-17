@@ -8,6 +8,14 @@ import pythoncom
 import pymssql
 
 
+def run_cmd(cmd):
+    print(cmd)
+    ret = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    print(ret.stdout.decode('gbk'))
+    print(ret.stdout.decode('gbk'))
+    return ret.returncode == 0
+
+
 def ping_server(ip) -> bool:
     """测试服务器连接性
 
@@ -27,11 +35,17 @@ def ping_sqlserver(ip, dbuser, password):
 def copy_file(ip, dest_path, local_path, username, password) -> bool:
     cmd = fr"net use \\{ip}\ipc$ {password} /user:{username} " + '\n' \
           fr"Xcopy \\{ip}{dest_path} {local_path} /s /e /y /d"
-    print(cmd)
-    ret = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    print(ret.stdout.decode('gbk'))
-    print(ret.stdout.decode('gbk'))
-    return ret.returncode == 0
+    return run_cmd(cmd)
+
+
+def delete_local_file(local_path):
+    cmd = f'forfiles /p "{local_path}" /m *.bak /d -30 /c "cmd /c del @path"'
+    return run_cmd(cmd)
+
+
+def delete_dest_file(ip, dest_path):
+    cmd = ''
+    return run_cmd(cmd)
 
 
 def list_local_cpu() -> List[Cpu]:
