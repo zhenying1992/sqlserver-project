@@ -25,12 +25,12 @@ def ping_sqlserver(ip, dbuser, password):
 
 
 def copy_file(ip, dest_path, local_path, username, password) -> bool:
-    cmd = f"net use \\{ip}\ipc$ {password} /user:{username}" \
-          f"Xcopy \\{ip}{dest_path} {local_path} /s /e /y /d"
+    cmd = fr"net use \\{ip}\ipc$ {password} /user:{username} " \
+          fr"Xcopy \\{ip}{dest_path} {local_path} /s /e /y /d"
     print(cmd)
     ret = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    print(ret.stdout)
-    print(ret.stdout)
+    print(ret.stdout.decode())
+    print(ret.stdout.decode())
     return ret.returncode == 0
 
 
