@@ -1,7 +1,6 @@
 from django.urls import path
 from .views.user import loginView, logoutView, changePasswordView
-from .views.task import taskView, serverView, getCronTaskView, createCronTaskView, deleteCronTaskView, logView,\
-    executeView
+from .views.task import taskView, serverView, getCronTaskView, createCronTaskView, deleteCronTaskView, logView
 from .views.tool import serverTestView, databaseTestView, copyFileView
 from .views.system import diskView, cpuView, memoryView, sysView
 
