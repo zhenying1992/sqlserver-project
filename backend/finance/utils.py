@@ -20,15 +20,18 @@ def ping_server(ip) -> bool:
 def ping_sqlserver(ip, dbuser, password):
     try:
         return pymssql.connect(host=ip, user=dbuser, password=password)
-    except Except:
-        return false
+    except Exception:
+        return False
 
 
 def copy_file(ip, dest_path, local_path, username, password) -> bool:
     cmd = f"net use \\{ip}\ipc$ {password} /user:{username}" \
           f"Xcopy \\{ip}{dest_path} {local_path} /s /e /y /d"
-    ret = subprocess.run(cmd=cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    return ret.returncode
+    print(cmd)
+    ret = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    print(ret.stdout)
+    print(ret.stdout)
+    return ret.returncode == 0
 
 
 def list_local_cpu() -> List[Cpu]:
