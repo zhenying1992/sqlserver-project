@@ -1,7 +1,7 @@
 from django.urls import path
 from .views.user import loginView, logoutView, changePasswordView
 from .views.task import taskView, serverView, getCronTaskView, createCronTaskView, deleteCronTaskView, logView
-from .views.tool import serverTestView, databaseTestView, copyFileView
+from .views.tool import serverTestView, databaseTestView, copyFileView, deleteDestFileView, deleteLocalFileView
 from .views.system import diskView, cpuView, memoryView, sysView
 
 urlpatterns = [
@@ -17,8 +17,8 @@ urlpatterns = [
     path('server-test', serverTestView),
     path('database-test', databaseTestView),
     path('copy-file', copyFileView),
-    path('delete-dest-file', ),
-    path('delete-local-file', ),
+    path('delete-dest-file', deleteDestFileView),
+    path('delete-local-file', deleteLocalFileView),
     path('cpu', cpuView),
     path('memory', memoryView),
     path('disk', diskView),
