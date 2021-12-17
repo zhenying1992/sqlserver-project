@@ -29,8 +29,8 @@ def copy_file(ip, dest_path, local_path, username, password) -> bool:
           fr"Xcopy \\{ip}{dest_path} {local_path} /s /e /y /d"
     print(cmd)
     ret = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    print(ret.stdout.decode())
-    print(ret.stdout.decode())
+    print(ret.stdout.decode('gbk'))
+    print(ret.stdout.decode('gbk'))
     return ret.returncode == 0
 
 
