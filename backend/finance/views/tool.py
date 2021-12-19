@@ -1,7 +1,8 @@
 from django.http import JsonResponse
 from finance.views.base import login_require
-from finance.utils import ping_server, ping_sqlserver, copy_file, delete_local_file
+from finance.utils import ping_server, ping_sqlserver, copy_file, delete_local_file, backup_sqlserver
 from finance.models import get_db_server
+import datetime
 import json
 
 
@@ -50,6 +51,25 @@ def deleteDestFileView(request):
 @login_require
 def deleteLocalFileView(request):
     res = delete_local_file(local_path=r'E:\199GXCW30')
+    if res:
+        return JsonResponse({'msg': '执行成功', 'status': True})
+    return JsonResponse({'msg': "执行失败", 'status': False})
+
+
+@login_require
+def backupDatabaseView(request):
+    db_name = 'gxgz5'
+    db_server = get_db_server()
+    now = datetime.datetime.now().strftime("%Y_%m_%d_%H_%M")
+    name = f'{db_name}_{now}.bak'
+    res = backup_sqlserver(
+        ip=db_server.ip,
+        username=db_server.username,
+        password=db_server.password,
+        database=db_name,
+        local_path=rf'e:\{name}'
+    )
+
     if res:
         return JsonResponse({'msg': '执行成功', 'status': True})
     return JsonResponse({'msg': "执行失败", 'status': False})

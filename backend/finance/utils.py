@@ -32,6 +32,14 @@ def ping_sqlserver(ip, dbuser, password):
         return False
 
 
+def backup_sqlserver(ip, username, password, database, local_path):
+    cmd = fr"net use \\{ip}\ipc$ {password} /user:{username} "
+    cmd1 = f"sqlcmd -s . -E -Q \"BACKUP DATABASE {database} TO DISK='{local_path}'\""
+    run_cmd(cmd)
+    run_cmd(cmd1)
+    return True
+
+
 def copy_file(ip, dest_path, local_path, username, password) -> bool:
     cmd2 = fr"net use \\{ip}\ipc$ {password} /user:{username} "
     cmd3 = fr"Xcopy \\{ip}{dest_path} {local_path} /s /e /y /d"
