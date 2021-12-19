@@ -33,7 +33,8 @@ def ping_sqlserver(ip, dbuser, password):
 
 
 def copy_file(ip, dest_path, local_path, username, password) -> bool:
-    cmd = fr"net use \\{ip}\ipc$ {password} /user:{username} " + '\n' \
+    cmd = f'net use * /del /y \n' \
+          fr"net use \\{ip}\ipc$ {password} /user:{username} " + '\n' \
           fr"Xcopy \\{ip}{dest_path} {local_path} /s /e /y /d"
     return run_cmd(cmd)
 
