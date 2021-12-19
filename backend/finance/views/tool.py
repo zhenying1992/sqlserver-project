@@ -31,7 +31,7 @@ def copyFileView(request):
     db_server = get_db_server()
     res = copy_file(
         ip=db_server.ip,
-        dest_path=r'\E$GXCW30',
+        dest_path=r'\E$\GXCW30',
         local_path=r'e:\199GXCW30',
         username=db_server.username,
         password=db_server.password
