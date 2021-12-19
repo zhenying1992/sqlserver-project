@@ -33,10 +33,13 @@ def ping_sqlserver(ip, dbuser, password):
 
 
 def copy_file(ip, dest_path, local_path, username, password) -> bool:
-    cmd = f'net use * /del /y \n' \
-          fr"net use \\{ip}\ipc$ {password} /user:{username} " + '\n' \
-          fr"Xcopy \\{ip}{dest_path} {local_path} /s /e /y /d"
-    return run_cmd(cmd)
+    cmd1 = f'net use * /del /y'
+    cmd2 = fr"net use \\{ip}\ipc$ {password} /user:{username} "
+    cmd3 = fr"Xcopy \\{ip}{dest_path} {local_path} /s /e /y /d"
+    run_cmd(cmd1)
+    run_cmd(cmd2)
+    run_cmd(cmd3)
+    return True
 
 
 def delete_local_file(local_path):
