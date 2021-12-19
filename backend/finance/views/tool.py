@@ -66,7 +66,7 @@ def backupDatabaseView(request):
         username=db_server.username,
         password=db_server.password,
         database=db_name,
-        local_path=rf'e:\{name}'
+        local_path=rf'e:\backup\{name}'
     )
 
     if res:

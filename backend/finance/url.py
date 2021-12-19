@@ -14,12 +14,14 @@ urlpatterns = [
     path('create-cron-task', createCronTaskView),
     path('delete-cron-task', deleteCronTaskView),
     path('log', logView),
+
     path('server-test', serverTestView),
     path('database-test', databaseTestView),
     path('copy-file', copyFileView),
     path('backup-database', backupDatabaseView),
     path('delete-dest-file', deleteDestFileView),
     path('delete-local-file', deleteLocalFileView),
+
     path('cpu', cpuView),
     path('memory', memoryView),
     path('disk', diskView),
