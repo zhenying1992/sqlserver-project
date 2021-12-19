@@ -28,7 +28,6 @@ def databaseTestView(request):
 
 @login_require
 def copyFileView(request):
-
     db_server = get_db_server()
     res = copy_file(
         ip=db_server.ip,
