@@ -1,0 +1,121 @@
+1. 登录
+    url: /api/login
+
+    params:
+        username: "xxx"
+        password: "xxx"
+
+    response:
+        {'msg': '登陆成功', 'status': True}
+        {'msg': '登陆失败', 'status': False}
+
+2. 退出
+    url: /api/logout
+
+    response:
+        {'msg': '登出成功', 'status': True}
+
+3. 修改密码
+    url: /api/change-password
+
+    params:
+        password: "xxxx"
+
+    response:
+        {'msg': '修改成功', 'status': True}
+
+
+4. 日志
+    url: /api/log
+
+    params:
+        week: true
+
+    response:
+        {
+            data: [
+                    {
+                        'id': log.id,
+                        'name': log.name,
+                        'content': log.content,
+                        'status': 'success',
+                        'created_time': log.created_time.strftime("%Y-%m-%d %H:%M:%S")
+                    }
+                ]
+             status: True
+         }
+
+
+5. 服务器测试
+    url: /api/server-test
+
+    response:
+        {'msg': '连接成功', 'status': True}
+        {'msg': '失败', 'status': False}
+
+6. 数据库测试
+    url: /api/database-test
+
+    param:
+        username: "xxx"
+        password: "xxx"
+
+    response:
+        {'msg': '连接成功', 'status': True}
+        {'msg': '失败', 'status': False}
+
+
+
+7. 文件拷贝
+    url: /api/copy-file
+
+    response:
+         {'msg': '执行成功', 'status': True}
+        {'msg': "执行失败", 'status': False}
+
+8. 数据库远程备份
+    url: /api/backup-database
+
+    response:
+        {'msg': '执行成功', 'status': True}
+        {'msg': "执行失败", 'status': False}
+
+9. 删除本地文件
+     url: /api/delete-local-file
+     response:
+        {'msg': '执行成功', 'status': True}
+        {'msg': "执行失败", 'status': False}
+
+
+[10 - 13] 的返回值直接在浏览器中看
+10. cpu
+     url: /api/cpu
+
+11. 内存
+    url: /api/memory
+
+12. 磁盘
+    url: /api/disk
+
+13. 系统
+    url: /api/sys
+
+14. 修改拷贝执行时间段
+    url: /api/task/update-copy-task
+
+    params:
+        schedule: '00:10-01:00'
+
+    response:
+        {'data': "输入需要为00:00-01:00格式", 'status': False}
+        {'data': "修改成功", 'status': True}
+
+15. 修改删除执行时间段
+    url: /api/task/update-delete-task
+
+    params:
+        days: 1
+
+    response:
+        {'data': "输入的非数字或小于0", 'status': False}
+        {'data': "修改成功", 'status': True}
