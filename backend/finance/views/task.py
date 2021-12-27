@@ -23,10 +23,9 @@ def updateCopyTaskView(request):
 
 @login_require
 def updateDeleteTaskView(request):
-    data = json.loads(request.body)
-    days = data['days']
-
     try:
+        data = json.loads(request.body)
+        days = data['days']
         days = int(days)
         if days <= 0:
             raise
