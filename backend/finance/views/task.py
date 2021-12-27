@@ -40,6 +40,7 @@ def updateDeleteTaskView(request):
 
 @login_require
 def logView(request):
+    print(request.body)
     data = json.loads(request.body)
     delta = 7 if data['week'] else 1
     start = datetime.datetime.now() - datetime.timedelta(days=delta)
