@@ -40,9 +40,12 @@ def updateDeleteTaskView(request):
 
 @login_require
 def logView(request):
-    print(request.body)
-    data = json.loads(request.body)
-    delta = 7 if data['week'] else 1
+    try:
+        data = json.loads(request.body)
+        delta = 7 if data['week'] else 1
+    except Exception:
+        delta = 1
+
     start = datetime.datetime.now() - datetime.timedelta(days=delta)
     log_list = LogModel.objects.filter(created_time__gte=start).all()
     log_list = [
