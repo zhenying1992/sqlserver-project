@@ -8,7 +8,7 @@ from dataclasses import asdict
 def cpuView(request):
     return JsonResponse(
         {
-            'status': 'success',
+            'status': True,
             'data': [asdict(cpu) for cpu in list_local_cpu()],
         }
     )
@@ -18,7 +18,7 @@ def cpuView(request):
 def memoryView(request):
     return JsonResponse(
         {
-            'status': 'success',
+            'status': True,
             'data': asdict(get_local_memory()),
         }
     )
@@ -28,7 +28,7 @@ def memoryView(request):
 def diskView(request):
     return JsonResponse(
         {
-            'status': 'success',
+            'status': True,
             'data': [asdict(disk) for disk in list_local_disk()],
         }
     )
@@ -38,7 +38,7 @@ def diskView(request):
 def sysView(request):
     return JsonResponse(
         {
-            'status': 'success',
+            'status': True,
             'data': asdict(get_sys_info()),
         }
     )

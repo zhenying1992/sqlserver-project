@@ -43,11 +43,6 @@ def copyFileView(request):
 
 
 @login_require
-def deleteDestFileView(request):
-    pass
-
-
-@login_require
 def deleteLocalFileView(request):
     res = delete_local_file(local_path=r'E:\199GXCW30')
     if res:

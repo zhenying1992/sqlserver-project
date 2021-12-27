@@ -1,77 +1,59 @@
 from django.http import JsonResponse
 from finance.views.base import login_require
-from finance.constant import TASK_LIST
-from finance.models import Server, CronTask, LogModel
+from finance.models import LogModel, CronTask
 import json
+import datetime
+import re
+
+p = re.compile(r'^([0-1][0-9]|2[0-3]):([0-5][0-9])-([0-1][0-9]|2[0-3]):([0-5][0-9])$')
 
 
 @login_require
-def taskView(request):
-    return JsonResponse({'data': TASK_LIST})
-
-
-@login_require
-def getCronTaskView(request):
-    cron_task_list = CronTask.objects.all()
-    cron_task_list = [
-        {
-            'id': task.id,
-            'name': task.name,
-            'created_time': task.created_time.strftime("%Y-%m-%d %H:%M:%S"),
-            'schedule': task.schedule,
-            'params': json.dumps({k: v for k, v in json.loads(task.params).items() if v})
-        }
-        for task in cron_task_list
-    ]
-    return JsonResponse({'data': cron_task_list})
-
-
-@login_require
-def createCronTaskView(request):
+def updateCopyTaskView(request):
     data = json.loads(request.body)
-    task = CronTask(
-        name=data.pop('task'),
-        schedule=data.pop('schedule'),
-        params=json.dumps(data)
-    )
+    schedule = data['schedule']
+    if not p.match(schedule):
+        return JsonResponse({'data': "输入需要为00:00-01:00格式", 'status': False})
+
+    task = CronTask.objects.get(id=1)
+    task.schedule = schedule
     task.save()
-    return JsonResponse({'data': 'success'})
+    return JsonResponse({'data': "修改成功", 'status': True})
 
 
 @login_require
-def deleteCronTaskView(request):
+def updateDeleteTaskView(request):
     data = json.loads(request.body)
-    task = CronTask.objects.get(id=data['id'])
-    task.delete()
-    return JsonResponse({'data': 'success'})
+    days = data['days']
 
+    try:
+        days = int(days)
+        if days <= 0:
+            raise
+    except Exception:
+        return JsonResponse({'data': "输入的非数字或小于0", 'status': False})
 
-@login_require
-def serverView(request):
-    server_list = Server.objects.all()
-    server_list = [
-        {
-            'id': server.id,
-            'ip': server.ip
-        }
-        for server in server_list
-    ]
-    return JsonResponse({'data': server_list})
+    task = CronTask.objects.get(id=2)
+    task.days = days
+    task.save()
+    return JsonResponse({'data': "修改成功", 'status': True})
 
 
 @login_require
 def logView(request):
     data = json.loads(request.body)
-    start, end = data
-    log_list = LogModel.objects.filter(created_time__gte=start).filter(created_time__lte=end).all()
+    delta = 7 if data['week'] else 1
+    start = datetime.datetime.now() - datetime.timedelta(days=delta)
+    log_list = LogModel.objects.filter(created_time__gte=start).all()
     log_list = [
         {
             'id': log.id,
             'name': log.name,
             'content': log.content,
+            'status': log.status,
             'created_time': log.created_time.strftime("%Y-%m-%d %H:%M:%S")
         }
         for log in log_list
     ]
 
-    return JsonResponse({'data': log_list})
+    return JsonResponse({'data': log_list, 'status': True})

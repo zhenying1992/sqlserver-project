@@ -16,7 +16,7 @@ class CronTask(models.Model):
     name = models.CharField(max_length=200)
     created_time = models.DateTimeField(auto_now_add=True)
     schedule = models.CharField(max_length=200)
-    params = models.TextField(default='')
+    days = models.IntegerField(default=30)
 
     class Meta:
         db_table = 'cron_task'
