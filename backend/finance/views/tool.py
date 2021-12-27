@@ -4,6 +4,7 @@ from finance.utils import ping_server, ping_sqlserver, copy_file, delete_local_f
 from finance.models import get_db_server
 import datetime
 import json
+from finance.config import DEST_PATH, LOCAL_PATH, DB_NAME
 
 
 @login_require
@@ -31,8 +32,8 @@ def copyFileView(request):
     db_server = get_db_server()
     res = copy_file(
         ip=db_server.ip,
-        dest_path=r'\E$\GXCW30',
-        local_path=r'e:\199GXCW30',
+        dest_path=DEST_PATH,
+        local_path=LOCAL_PATH,
         username=db_server.username,
         password=db_server.password
     )
@@ -44,7 +45,7 @@ def copyFileView(request):
 
 @login_require
 def deleteLocalFileView(request):
-    res = delete_local_file(local_path=r'E:\199GXCW30')
+    res = delete_local_file(local_path=LOCAL_PATH)
     if res:
         return JsonResponse({'msg': '执行成功', 'status': True})
     return JsonResponse({'msg': "执行失败", 'status': False})
@@ -52,15 +53,14 @@ def deleteLocalFileView(request):
 
 @login_require
 def backupDatabaseView(request):
-    db_name = 'gxgz5'
     db_server = get_db_server()
     now = datetime.datetime.now().strftime("%Y_%m_%d_%H_%M")
-    name = f'{db_name}_{now}.bak'
+    name = f'{DB_NAME}_{now}.bak'
     res = backup_sqlserver(
         ip=db_server.ip,
         username=db_server.username,
         password=db_server.password,
-        database=db_name,
+        database=DB_NAME,
         local_path=rf'e:\backup\{name}'
     )
 

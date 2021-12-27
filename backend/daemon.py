@@ -7,42 +7,14 @@ import json
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', "backend.settings")
 
 django.setup()
-from finance.models import CronTask, LogModel
+from finance.models import CronTask, LogModel, get_db_server
 from django.db import transaction
-from finance.utils import download_file, delete_file
-from finance import constant
+from finance.utils import copy_file, delete_local_file
+from finance.config import DEST_PATH, LOCAL_PATH
 
 
 def is_schedule_in_range(schedule):
     return datetime.datetime.now().strftime('%H:%M') == schedule
-
-
-def run_bak_database(task):
-    pass
-
-
-def run_copy_file(task):
-    params = json.loads(task.params)
-    print('params: ', params)
-    download_file(
-        ip=params['source_ip'],
-        username=constant.SSH_USER,
-        file=params['source_path'],
-        local_file=params['dest_path'],
-    )
-
-
-def run_delete_file(task):
-    params = json.loads(task.params)
-
-    delete_file(file=params['source_path'])
-
-
-task_mapping = {
-    '备份数据库到本地': run_bak_database,
-    '传输文件到远程': run_copy_file,
-    '删除文件': run_delete_file,
-}
 
 
 @transaction.atomic
@@ -55,12 +27,23 @@ def get_schedule_task():
 
 def schedule(task):
     print(f'执行任务: {task.name}')
-    func = task_mapping[task.name]
+    server = get_db_server()
     try:
-        res = func(task)
+        if task.id == 1:
+            res = copy_file(
+                ip=server.ip,
+                dest_path=DEST_PATH,
+                local_path=LOCAL_PATH,
+                username=server.username,
+                password=server.password,
+            )
+        else:
+            res = delete_local_file(
+                local_path=LOCAL_PATH
+            )
 
         LogModel.objects.create(
-            content=res,
+            content='执行成功',
             name=task.name,
         )
         print('执行完成\n\n')
@@ -78,4 +61,4 @@ while True:
         schedule(task)
 
     print('等待下次轮询\n\n')
-    time.sleep(5)
+    time.sleep(60)
