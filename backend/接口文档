@@ -119,3 +119,14 @@
     response:
         {'data': "输入的非数字或小于0", 'status': False}
         {'data': "修改成功", 'status': True}
+
+
+16. 创建用户
+    url: /api/create-user
+
+    params:
+        username: "xx"
+        password: "xx"
+
+    response:
+        {'data': "修改成功", 'status': True}

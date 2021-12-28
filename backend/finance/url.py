@@ -1,5 +1,5 @@
 from django.urls import path
-from .views.user import loginView, logoutView, changePasswordView
+from .views.user import loginView, logoutView, changePasswordView, createUserView
 from .views.task import logView, updateCopyTaskView, updateDeleteTaskView
 from .views.tool import serverTestView, databaseTestView, copyFileView, deleteLocalFileView, backupDatabaseView
 from .views.system import diskView, cpuView, memoryView, sysView
@@ -8,6 +8,7 @@ urlpatterns = [
     path('login', loginView),
     path('logout', logoutView),
     path('change-password', changePasswordView),
+    path('create-user', createUserView),
 
     path('log', logView),
     path('task/update-copy-task', updateCopyTaskView),

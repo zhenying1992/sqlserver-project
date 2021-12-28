@@ -3,9 +3,12 @@ from django.http import JsonResponse
 
 def login_require(func):
     def wrap(request):
-        return func(request)  # todo fix
-        if request.user.is_authenticated:
+        if not request.user.is_authenticated:
+            return JsonResponse(data={'msg': '用户未登陆', 'status': False})
+
+        try:
             return func(request)
-        return JsonResponse(data={'msg': '用户未登陆', 'status': 400})
+        except Exception as e:
+            return JsonResponse(data={'msg': f"请求失败{e}", 'status': False})
 
     return wrap

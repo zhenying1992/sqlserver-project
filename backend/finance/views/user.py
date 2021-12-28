@@ -30,3 +30,13 @@ def changePasswordView(request):
     user.set_password(data['password'])
     user.save()
     return JsonResponse(data={'msg': '修改成功', 'status': True})
+
+
+@login_require
+def createUserView(request):
+    data = json.loads(request.body)
+    username = data['username']
+    password = data['password']
+    user = User.objects.create_user(username=username, password=password)
+    user.save()
+    return JsonResponse(data={'msg': '创建成功', 'status': True})
