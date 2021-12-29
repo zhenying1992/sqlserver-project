@@ -48,8 +48,8 @@ def copy_file(ip, dest_path, local_path, username, password) -> bool:
     return True
 
 
-def delete_local_file(local_path):
-    cmd = f'forfiles /p "{local_path}" /m *.bak /d -30 /c "cmd /c del @path"'
+def delete_local_file(local_path, days=30):
+    cmd = f'forfiles /p "{local_path}" /m *.bak /d -{days} /c "cmd /c del @path"'
     return run_cmd(cmd)
 
 

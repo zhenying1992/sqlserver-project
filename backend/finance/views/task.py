@@ -60,3 +60,19 @@ def logView(request):
     ]
 
     return JsonResponse({'data': log_list, 'status': True})
+
+
+@login_require
+def taskView(request):
+    task_list = CronTask.objects.all()
+    task_list = [
+        {
+            'id': task.id,
+            'name': task.name,
+            'schedule': task.schedule,
+            'days': task.days,
+        }
+        for task in task_list
+    ]
+
+    return JsonResponse({'data': task_list, 'status': True})

@@ -39,7 +39,8 @@ def schedule(task):
             )
         else:
             res = delete_local_file(
-                local_path=LOCAL_PATH
+                local_path=LOCAL_PATH,
+                days=task.days
             )
 
         LogModel.objects.create(
