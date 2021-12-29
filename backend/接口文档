@@ -130,3 +130,20 @@
 
     response:
         {'data': "修改成功", 'status': True}
+
+
+17. 任务信息
+    url: /api/task
+
+    respones:
+        {
+            data: [
+                    {
+                        'id': log.id,
+                        'name': 'xx',
+                        'schedule': 'xx',
+                        'days': 'xx'
+                    }
+                ]
+             status: True
+         }

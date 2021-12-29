@@ -5,7 +5,7 @@ import json
 import datetime
 import re
 
-p = re.compile(r'^([0-1][0-9]|2[0-3]):([0-5][0-9])-([0-1][0-9]|2[0-3]):([0-5][0-9])$')
+p = re.compile(r'^([0-1][0-9]|2[0-3]):([0-5][0-9])$')
 
 
 @login_require
@@ -13,7 +13,7 @@ def updateCopyTaskView(request):
     data = json.loads(request.body)
     schedule = data['schedule']
     if not p.match(schedule):
-        return JsonResponse({'data': "输入需要为00:00-01:00格式", 'status': False})
+        return JsonResponse({'data': "输入需要为00:00格式", 'status': False})
 
     task = CronTask.objects.get(id=1)
     task.schedule = schedule

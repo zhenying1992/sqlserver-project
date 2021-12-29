@@ -2,7 +2,6 @@ import os
 import django
 import time
 import datetime
-import json
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', "backend.settings")
 
@@ -30,7 +29,7 @@ def schedule(task):
     server = get_db_server()
     try:
         if task.id == 1:
-            res = copy_file(
+            copy_file(
                 ip=server.ip,
                 dest_path=DEST_PATH,
                 local_path=LOCAL_PATH,
@@ -38,7 +37,7 @@ def schedule(task):
                 password=server.password,
             )
         else:
-            res = delete_local_file(
+            delete_local_file(
                 local_path=LOCAL_PATH,
                 days=task.days
             )
