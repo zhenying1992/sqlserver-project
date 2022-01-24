@@ -104,7 +104,7 @@
     url: /api/task/update-copy-task
 
     params:
-        schedule: '00:10-01:00'
+        schedule: '00:10'
 
     response:
         {'data': "输入需要为00:00-01:00格式", 'status': False}
@@ -115,7 +115,7 @@
 
     params:
         days: 1
-        schedule: '00:10-01:00'
+        schedule: '00:10'
 
     response:
         {'data': "输入的非数字或小于0", 'status': False}
