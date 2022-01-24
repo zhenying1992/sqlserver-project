@@ -2,6 +2,7 @@ import os
 import django
 import time
 import datetime
+import logging
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', "backend.settings")
 
@@ -11,6 +12,7 @@ from django.db import transaction
 from finance.utils import copy_file, delete_local_file
 from finance.config import DEST_PATH, LOCAL_PATH
 
+logger = logging.getLogger(__name__)
 
 def is_schedule_in_range(schedule):
     return datetime.datetime.now().strftime('%H:%M') == schedule
@@ -25,7 +27,7 @@ def get_schedule_task():
 
 
 def schedule(task):
-    print(f'执行任务: {task.name}')
+    logger.info(f'执行任务: {task.name}')
     server = get_db_server()
     try:
         if task.id == 1:
@@ -46,9 +48,9 @@ def schedule(task):
             content='执行成功',
             name=task.name,
         )
-        print('执行完成\n\n')
+        logger.info("执行完成")
     except Exception as ex:
-        print(f'执行发生错误: {ex}')
+        logger.error(f"执行发生错误{ex}")
         LogModel.objects.create(
             content=str(ex),
             name=task.name,
@@ -56,9 +58,10 @@ def schedule(task):
 
 
 while True:
+    logger.info("任务启动")
     task = get_schedule_task()
     if task:
         schedule(task)
 
-    print('等待下次轮询\n\n')
+    logger.info("等待下次轮询\n")
     time.sleep(60)
