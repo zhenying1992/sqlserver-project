@@ -25,8 +25,8 @@ def updateCopyTaskView(request):
 def updateDeleteTaskView(request):
     try:
         data = json.loads(request.body)
-        days = data['days']
-        schedule = data['schedule']
+        days = data.get("day", None)
+        schedule = data.get("schedule", None)
         days = int(days)
         if days <= 0:
             raise
@@ -34,8 +34,10 @@ def updateDeleteTaskView(request):
         return JsonResponse({'data': "输入的非数字或小于0", 'status': False})
 
     task = CronTask.objects.get(id=2)
-    task.days = days
-    task.schedule = schedule
+    if days:
+        task.days = days
+    if schedule:
+        task.schedule = schedule
     task.save()
     return JsonResponse({'data': "修改成功", 'status': True})
 
