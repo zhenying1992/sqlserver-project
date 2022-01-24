@@ -15,7 +15,7 @@ from finance.config import DEST_PATH, LOCAL_PATH
 fh = logging.FileHandler(filename="daemon.log")
 fh.setLevel(logging.INFO)
 fmt = logging.Formatter("%(asctime)s - %(filename)s[line:%(lineno)d] - %(levelname)s: %(message)s")
-fh.setLevel(fmt)
+fh.setFormatter(fmt)
 
 logger = logging.getLogger(__name__)
 logger.addHandler(fh)
