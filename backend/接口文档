@@ -115,6 +115,7 @@
 
     params:
         days: 1
+        schedule: '00:10-01:00'
 
     response:
         {'data': "输入的非数字或小于0", 'status': False}
