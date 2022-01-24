@@ -26,7 +26,7 @@ def updateCopyTaskView(request):
 @login_require
 def updateDeleteTaskView(request):
     data = json.loads(request.body)
-    days = data.get("day", None)
+    days = data.get("days", None)
     schedule = data.get("schedule", None)
     task = CronTask.objects.get(id=2)
 
