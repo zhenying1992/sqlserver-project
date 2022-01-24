@@ -12,7 +12,14 @@ from django.db import transaction
 from finance.utils import copy_file, delete_local_file
 from finance.config import DEST_PATH, LOCAL_PATH
 
+fh = logging.FileHandler(filename="daemon.log")
+fh.setLevel(logging.INFO)
+fmt = logging.Formatter("%(asctime)s - %(filename)s[line:%(lineno)d] - %(levelname)s: %(message)s")
+fh.setLevel(fmt)
+
 logger = logging.getLogger(__name__)
+logger.addHandler(fh)
+
 
 def is_schedule_in_range(schedule):
     return datetime.datetime.now().strftime('%H:%M') == schedule
