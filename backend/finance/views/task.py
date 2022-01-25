@@ -26,6 +26,7 @@ def updateCopyTaskView(request):
 @login_require
 def updateDeleteTaskView(request):
     data = json.loads(request.body)
+    print(data)
     days = data.get("days", None)
     schedule = data.get("schedule", None)
     task = CronTask.objects.get(id=2)
@@ -44,6 +45,7 @@ def updateDeleteTaskView(request):
             return JsonResponse({'data': "输入需要为00:00格式", 'status': False})
         task.schedule = schedule
 
+    print(task)
     task.save()
     return JsonResponse({'data': "修改成功", 'status': True})
 
