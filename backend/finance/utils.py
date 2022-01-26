@@ -12,7 +12,7 @@ def run_cmd(cmd):
     print(cmd)
     ret = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     print(ret.stdout.decode('gbk'))
-    print(ret.stdout.decode('gbk'))
+    print(ret.stderr.decode('gbk'))
     return ret.returncode == 0
 
 
