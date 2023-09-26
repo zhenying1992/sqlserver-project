@@ -3,9 +3,9 @@ import os
 import datetime
 from finance.schema import Disk, Cpu, Memory, Sys
 from typing import List
-import wmi
-import pythoncom
-import pymssql
+# import wmi
+# import pythoncom
+# import pymssql
 
 
 def run_cmd(cmd):

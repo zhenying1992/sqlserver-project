@@ -1,0 +1,107 @@
+import pymssql
+
+
+class Transaction:
+    def __init__(self): # todo
+        self.host = ''
+        self.port = ''
+        self.db = ''
+        self.user = ''
+        self.password = ''
+
+    def __call__(self, *args, **kwargs):
+        def wrap(fn):
+            with self:
+                return fn(*args, **kwargs)
+
+        return wrap
+
+    def __enter__(self):
+        self.conn = pymssql.connect(
+            host=self.host,
+            port=self.port,
+            user=self.user,
+            password=self.password,
+            database=self.db
+        )
+        self.cursor = self.conn.cursor()
+        return self.cursor
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if self.cursor:
+            self.cursor.close()
+
+        if self.conn:
+            self.conn.close()
+
+
+def list_bm():
+    with Transaction() as cursor:
+        cursor.execute("select BMMC from PBMDM")
+        res = cursor.fetchall()
+        return [item[0] for item in res]
+
+
+def list_xm():
+    with Transaction() as cursor:
+        cursor.execute("select xmmc from xs_zyfxmdm")
+        res = cursor.fetchall()
+        return [item[0] for item in res]
+
+
+def xf_query(xh=None, xm=None, bms=None, rxnd=None, sfnd=None, sfqf=None, current=1, page_size=10):
+    with Transaction() as cursor:
+        sql = "select XH, XM, KSH, SFZH, RXND, LXNX, BMDM, BMMC, ZYDM, ZYMC," \
+              "SFQJDM, SFQJMC, SFXMDM, SFXMMC, YJJE, SJJE, TFJE, JMJE, HJJE, QFJE " \
+              "from datazz"
+
+        where = ''
+        if xh:
+            where += f' XH="{xh}" '
+
+        if xm:
+            where += f' XM="{xm}" '
+
+        if bms:
+            bms = '","'.join(bms)
+            where += f' BMMC in "{bms}" '
+
+        if rxnd:
+            where += f' RXND="{rxnd}" '
+
+        if sfnd:
+            where += f' SFND="{sfnd}" '
+
+        if sfqf:
+            where += f' SFQF={sfqf}'
+
+        if where:
+            sql = f'{sql} where {where} limit {current}, {page_size}'
+
+        cursor.execute(sql)
+        res = cursor.fetchall()
+        return res
+
+
+def zy_query(xh, bmbh, xmbh, ffxmmc, current=1, page_size=10):
+    with Transaction() as cursor:
+        sql = "select nian, yue, xh, xm, ffxmdm, zy, je, se, sl, sfje, bmbm, xmbh from xs_zyffb"
+        where = ''
+        if xh:
+            where += f' xh="{xh}"'
+
+        if bmbh:
+            where += f' bmbh="{bmbh}"'
+
+        if xmbh:
+            where += f' xmbh="{xmbh}"'
+
+        if ffxmmc:
+            where += f' ffxmmc="{ffxmmc}"'
+
+        if where:
+            sql = f'{sql} where {where} limit {current}, {page_size}'
+
+        cursor.execute(sql)
+        res = cursor.fetchall()
+        return res
