@@ -4,6 +4,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 
+from query.db import xf_query, zy_query
 from query.model import UserPropertyModel
 
 
@@ -182,34 +183,34 @@ def dataView(request):
     page_size = params.get('pageSize', 10)
 
     print(xh, xm, bms, rxnd, sfnd, sfqf, current, page_size)
-    # todo
+    data, total = xf_query(xh, xm, bms, rxnd, sfnd, sfqf, current, page_size)
 
-    data = [{
-        'XH': '123123',
-        'XM': '张铁蛋',
-        'KSH': '--',
-        'SFZH': '122222',
-        'RXND': '2000',
-        'LXND': '2022',
-        'BMDM': '1111',
-        'BMMC': '部门名称11',
-        'ZYDM': '2222',
-        'ZYMC': '专业名称111',
-        'SFQJDM': '12212',
-        'SFQJMC': '收费区间名称111',
-        'SFXMDM': '1111',
-        'SFXMMC': '收费项目名称111',
-        'YJJE': 100,
-        'SJJE': 1,
-        'TFJE': 2,
-        'JMJE': 1,
-        'HJJE': 1,
-        'QFJE': 1
-    }]
+    # data = [{
+    #     'XH': '123123',
+    #     'XM': '张铁蛋',
+    #     'KSH': '--',
+    #     'SFZH': '122222',
+    #     'RXND': '2000',
+    #     'LXND': '2022',
+    #     'BMDM': '1111',
+    #     'BMMC': '部门名称11',
+    #     'ZYDM': '2222',
+    #     'ZYMC': '专业名称111',
+    #     'SFQJDM': '12212',
+    #     'SFQJMC': '收费区间名称111',
+    #     'SFXMDM': '1111',
+    #     'SFXMMC': '收费项目名称111',
+    #     'YJJE': 100,
+    #     'SJJE': 1,
+    #     'TFJE': 2,
+    #     'JMJE': 1,
+    #     'HJJE': 1,
+    #     'QFJE': 1
+    # }]
     res = {
-        'total': 100,
-        'current': 1,
-        'pageSize': 10,
+        'total': total,
+        'current': current,
+        'pageSize': page_size,
         'data': data
     }
     return JsonResponse(res, safe=False)
@@ -247,25 +248,26 @@ def zyDataView(request):
     current = params.get('current', 1)
     page_size = params.get('pageSize', 10)
     print(xh, bmbh, xmbh, ffny_start, ffny_end, ffxm, current, page_size)
-    # todo
-    data = [{
-        'nian': '2022',
-        'yue': '2',
-        'xh': '122222',
-        'xm': '姓名',
-        'ffxmdm': '2000',
-        'zy': '摘要',
-        'je': '1111',
-        'se': '11',
-        'sl': '11',
-        'sfje': '11',
-        'bmbh': '111',
-        'xmbh': '收费区间名称111',
-    }]
+
+    data, total = zy_query(xh, bmbh, xmbh, ffxm, current, page_size)
+    # data = [{
+    #     'nian': '2022',
+    #     'yue': '2',
+    #     'xh': '122222',
+    #     'xm': '姓名',
+    #     'ffxmdm': '2000',
+    #     'zy': '摘要',
+    #     'je': '1111',
+    #     'se': '11',
+    #     'sl': '11',
+    #     'sfje': '11',
+    #     'bmbh': '111',
+    #     'xmbh': '收费区间名称111',
+    # }]
     res = {
-        'total': 10,
-        'current': 1,
-        'pageSize': 10,
+        'total': total,
+        'current': current,
+        'pageSize': page_size,
         'data': data
     }
     return JsonResponse(res, safe=False)

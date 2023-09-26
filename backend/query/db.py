@@ -2,7 +2,7 @@ import pymssql
 
 
 class Transaction:
-    def __init__(self): # todo
+    def __init__(self):  # todo
         self.host = ''
         self.port = ''
         self.db = ''
@@ -78,12 +78,21 @@ def xf_query(xh=None, xm=None, bms=None, rxnd=None, sfnd=None, sfqf=None, curren
         if where:
             sql = f'{sql} where {where} limit {current}, {page_size}'
 
+        cursor.execute(f"select count(1) from datazz where {where}")
+        res = cursor.fetchall()
+        total = res[0][0]
+
         cursor.execute(sql)
         res = cursor.fetchall()
-        return res
+        return [
+            {
+                'nian': item[0],
+            }
+            for item in res
+        ], total
 
 
-def zy_query(xh, bmbh, xmbh, ffxmmc, current=1, page_size=10):
+def zy_query(xh, bmbh, xmbh, ffxm, current=1, page_size=10):
     with Transaction() as cursor:
         sql = "select nian, yue, xh, xm, ffxmdm, zy, je, se, sl, sfje, bmbm, xmbh from xs_zyffb"
         where = ''
@@ -96,12 +105,32 @@ def zy_query(xh, bmbh, xmbh, ffxmmc, current=1, page_size=10):
         if xmbh:
             where += f' xmbh="{xmbh}"'
 
-        if ffxmmc:
-            where += f' ffxmmc="{ffxmmc}"'
+        if ffxm:
+            where += f' ffxm="{ffxm}"'
 
         if where:
             sql = f'{sql} where {where} limit {current}, {page_size}'
 
+        cursor.execute(f"select count(1) from datazz where {where}")
+        res = cursor.fetchall()
+        total = res[0][0]
+
         cursor.execute(sql)
         res = cursor.fetchall()
-        return res
+        return [
+            {
+                'nian': item[0],
+                'yue': item[1],
+                'xh': item[2],
+                'xm': item[3],
+                'ffxmd': item[4],
+                'zy': item[5],
+                'je': item[6],
+                'se': item[7],
+                'sl': item[8],
+                'sfje': item[9],
+                'bmbm': item[10],
+                'xmbh': item[11],
+            }
+            for item in res
+        ], total
