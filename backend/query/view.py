@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 
-from query.db import xf_query, zy_query
+from query.db import xf_query, zy_query, list_bm, list_xm
 from query.model import UserPropertyModel
 
 
@@ -118,16 +118,12 @@ def updateView(request):
     return JsonResponse(data='success', safe=False)
 
 
-def bmView(request):  # todo
-
-    res = ['部门1', '部门2', '部门3']
-    return JsonResponse(res, safe=False)
+def bmView(request):
+    return JsonResponse(list_bm(), safe=False)
 
 
-def xmView(request):  # todo
-
-    res = ['项目1', '项目2', '项目3']
-    return JsonResponse(res, safe=False)
+def xmView(request):
+    return JsonResponse(list_xm(), safe=False)
 
 
 def columnView(request):
