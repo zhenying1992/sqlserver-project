@@ -61,6 +61,7 @@ def schedule(task):
         LogModel.objects.create(
             content=str(ex),
             name=task.name,
+            status='failed'
         )
 
 

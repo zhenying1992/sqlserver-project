@@ -3,17 +3,19 @@ import os
 import datetime
 from finance.schema import Disk, Cpu, Memory, Sys
 from typing import List
-# import wmi
-# import pythoncom
-# import pymssql
+import wmi
+import pythoncom
+import pymssql
 
 
 def run_cmd(cmd):
     print(cmd)
     ret = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    stdout = ret.stdout.decode('gbk') + " " + ret.stderr.decode("gbk")
     print(ret.stdout.decode('gbk'))
-    print(ret.stderr.decode('gbk'))
-    return ret.returncode == 0
+
+    if ret.returncode != 0:
+        raise Exception(f"执行命令{cmd}失败: {stdout}")
 
 
 def ping_server(ip) -> bool:
@@ -26,10 +28,7 @@ def ping_server(ip) -> bool:
 
 
 def ping_sqlserver(ip, dbuser, password):
-    try:
-        return pymssql.connect(host=ip, user=dbuser, password=password)
-    except Exception:
-        return False
+    pymssql.connect(host=ip, user=dbuser, password=password)
 
 
 def backup_sqlserver(ip, username, password, database, local_path):
@@ -37,25 +36,23 @@ def backup_sqlserver(ip, username, password, database, local_path):
     cmd1 = f"sqlcmd -s . -E -Q \"BACKUP DATABASE {database} TO DISK='{local_path}'\""
     run_cmd(cmd)
     run_cmd(cmd1)
-    return True
 
 
-def copy_file(ip, dest_path, local_path, username, password) -> bool:
+def copy_file(ip, dest_path, local_path, username, password):
     cmd2 = fr"net use \\{ip}\ipc$ {password} /user:{username} "
     cmd3 = fr"Xcopy \\{ip}{dest_path} {local_path} /s /e /y /d"
     run_cmd(cmd2)
     run_cmd(cmd3)
-    return True
 
 
 def delete_local_file(local_path, days=30):
     cmd = f'forfiles /p "{local_path}" /m *.bak /d -{days} /c "cmd /c del @path"'
-    return run_cmd(cmd)
+    run_cmd(cmd)
 
 
 def delete_dest_file(ip, dest_path):
     cmd = ''
-    return run_cmd(cmd)
+    run_cmd(cmd)
 
 
 def list_local_cpu() -> List[Cpu]:
