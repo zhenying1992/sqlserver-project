@@ -6,16 +6,20 @@ from typing import List
 import wmi
 import pythoncom
 import pymssql
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def run_cmd(cmd):
-    print(cmd)
-    ret = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    stdout = ret.stdout.decode('gbk') + " " + ret.stderr.decode("gbk")
-    print(ret.stdout.decode('gbk'))
-
-    if ret.returncode != 0:
-        raise Exception(f"执行命令{cmd}失败: {stdout}")
+    try:
+        logger.info(f"执行命令: {cmd}")
+        ret = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        if ret.returncode != 0:
+            raise Exception(f"执行命令{cmd}失败：{ret.stderr.decode('gbk')}")
+    except Exception as ex:
+        raise ex
+    logger.info(f'执行命令: {cmd}成功')
 
 
 def ping_server(ip) -> bool:
