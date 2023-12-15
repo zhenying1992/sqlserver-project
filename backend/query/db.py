@@ -94,7 +94,7 @@ def xf_query(xh=None, xm=None, bms=None, rxnd=None, sfnd=None, sfqf=None, curren
 
 def zy_query(xh, bmbh, xmbh, ffxm, current=1, page_size=10):
     with Transaction() as cursor:
-        sql = "select nian, yue, xh, xm, ffxmdm, zy, je, se, sl, sfje, bmbm, xmbh from xs_zyffb"
+        sql = "select nian, yue, xh, xm, zy, je, se, sl, sfje, bmbh, xmbh from xs_zyffb"
         where = ''
         if xh:
             where += f' xh="{xh}"'
@@ -129,7 +129,7 @@ def zy_query(xh, bmbh, xmbh, ffxm, current=1, page_size=10):
                 'se': item[7],
                 'sl': item[8],
                 'sfje': item[9],
-                'bmbm': item[10],
+                'bmbh': item[10],
                 'xmbh': item[11],
             }
             for item in res

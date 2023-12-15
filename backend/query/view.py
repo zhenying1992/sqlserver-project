@@ -1,39 +1,49 @@
+import csv
+
 import json
 
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import logout
 from django.contrib.auth.models import User
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
+from django.contrib.auth.hashers import check_password
 
 from query.db import xf_query, zy_query, list_bm, list_xm
 from query.model import UserPropertyModel
+import uuid
 
 
 def loginView(request):
     data = json.loads(request.body)
-    user = authenticate(
-        username=data['username'],
-        password=data['password']
-    )
-    if user is not None:
-        login(request, user)
+
+    user = User.objects.using('query').filter(username=data['username']).all()
+    if not user:
+        return JsonResponse(data='不存在用户', status=400, safe=False)
+
+    user = user[0]
+    if check_password(data['password'], user.password):
+        key = uuid.uuid4()
+        user.first_name = key
+        user.save()
         resp = JsonResponse(data='登陆成功', status=200, safe=False)
+        resp.set_cookie('session_key', key)
         resp.set_cookie("username", user.username)
         resp.set_cookie("is_superuser", 1 if user.is_superuser else 0)
         return resp
     else:
-        return JsonResponse(data='登陆失败', status=400, safe=False)
+        return JsonResponse(data='密码错误', status=400, safe=False)
 
 
 def logoutView(request):
     logout(request)
     resp = JsonResponse(data='退出成功', status=200, safe=False)
+    resp.delete_cookie("session_key")
     resp.delete_cookie("username")
     resp.delete_cookie("is_superuser")
     return resp
 
 
 def usersView(request):
-    user_propertys = UserPropertyModel.objects.all()
+    user_propertys = UserPropertyModel.objects.using('query').all()
 
     def get_user_property(name):
         for user_property in user_propertys:
@@ -41,7 +51,7 @@ def usersView(request):
                 return user_property
         return None
 
-    users = User.objects.all()
+    users = User.objects.using('query').all()
     res = []
     for item in users:
         user_property = get_user_property(item.username)
@@ -57,7 +67,19 @@ def usersView(request):
     return JsonResponse(res, safe=False)
 
 
+def get_user(request):
+    session_key = request.COOKIES.get("session_key")
+    users = User.objects.using('query').all()
+    for user in users:
+        if user.first_name == session_key:
+            request.user = user
+            return user
+
+    return None
+
+
 def userView(request):
+    get_user(request)
     if request.user.is_anonymous:
         user = {
             'username': None,
@@ -67,7 +89,7 @@ def userView(request):
         }
         return JsonResponse(user, safe=False)
 
-    user_property = UserPropertyModel.objects.filter(username=request.user.username).first()
+    user_property = UserPropertyModel.objects.using('query').filter(username=request.user.username).first()
 
     user = {
         'username': request.user.username,
@@ -83,7 +105,7 @@ def createView(request):
     username = data['username']
     password = data['password']
     try:
-        user = User.objects.create_user(username=username, password=password)
+        user = User.objects.using('query').create_user(username=username, password=password)
         user.save()
     except Exception as ex:
         return JsonResponse(data=str(ex), status=400, safe=False)
@@ -99,19 +121,19 @@ def updateView(request):
     bms = data['bms']
 
     if password:
-        user = User.objects.get(username=username)
+        user = User.objects.using('query').get(username=username)
         user.set_password(password)
         user.save()
 
     permissions = ','.join(permissions) if permissions else ""
     bms = ','.join(bms) if bms else ""
-    user_property = UserPropertyModel.objects.filter(username=username).first()
+    user_property = UserPropertyModel.objects.using('query').filter(username=username).first()
     if user_property:
         user_property.permissions = permissions
         user_property.bms = bms
         user_property.save()
     else:
-        UserPropertyModel.objects.create(
+        UserPropertyModel.objects.using('query').create(
             username=username, permissions=permissions, bms=bms
         )
 
@@ -119,10 +141,12 @@ def updateView(request):
 
 
 def bmView(request):
+    # return JsonResponse([], safe=False)
     return JsonResponse(list_bm(), safe=False)
 
 
 def xmView(request):
+    # return JsonResponse([], safe=False)
     return JsonResponse(list_xm(), safe=False)
 
 
@@ -153,10 +177,12 @@ def columnView(request):
 
 
 def dataView(request):
-    if request.user.is_anonymous:
+    user = get_user(request)
+
+    if not user:
         raise Exception("用户未登录")
 
-    user_property = UserPropertyModel.objects.filter(username=request.user.username).first()
+    user_property = UserPropertyModel.objects.using('query').filter(username=request.user.username).first()
     if not user_property or user_property.bms == '':
         raise Exception("用户没有部门权限")
 
@@ -178,7 +204,9 @@ def dataView(request):
     current = params.get('current', 1)
     page_size = params.get('pageSize', 10)
 
-    print(xh, xm, bms, rxnd, sfnd, sfqf, current, page_size)
+    is_download = params.get("isDownload", False)
+
+    # print(xh, xm, bms, rxnd, sfnd, sfqf, current, page_size)
     data, total = xf_query(xh, xm, bms, rxnd, sfnd, sfqf, current, page_size)
 
     # data = [{
@@ -203,6 +231,21 @@ def dataView(request):
     #     'HJJE': 1,
     #     'QFJE': 1
     # }]
+    # total = 11
+    if is_download:
+        header = ['XH', 'XM', 'KSH', 'SFZH', 'RXND', 'LXND', 'BMDM', 'BMMC', 'ZYDM', 'ZYMC', 'SFQJDM',
+                  'SFQJMC', 'SFXMDM', 'SFXMMC', 'YJJE', 'SJJE', 'TFJE', 'JMJE', 'HJJE', 'QFJE']
+        response = HttpResponse()
+        response['Content-Disposition'] = 'attachment; filename="xf_data.csv"'
+        response['Content-Type'] = 'text/csv'
+        response['charset'] = 'utf-8-sig'
+        writer = csv.DictWriter(response, fieldnames=header)
+        writer.writeheader()
+        for item in data:
+            writer.writerow(item)
+
+        return response
+
     res = {
         'total': total,
         'current': current,
@@ -215,11 +258,11 @@ def dataView(request):
 def zyColumnView(request):
     columns = [
         {'title': '年', 'key': 'nian', "width": 100},
-        {'title': '月', 'key': 'yue', "width": 50},
+        {'title': '月', 'key': 'yue', "width": 100},
         {'title': '学号', 'key': 'xh', "width": 100},
         {'title': '姓名', 'key': 'xm', "width": 100},
-        {'title': '发放项目名称', 'key': 'ffxmdm', "width": 200},
-        {'title': '摘要', 'key': 'zy', "width": 100},
+        # {'title': '发放项目名称', 'key': 'ffxmdm', "width": 200},
+        {'title': '摘要', 'key': 'zy', "width": 400},
         {'title': '应发金额', 'key': 'je', "width": 100},
         {'title': '税额', 'key': 'se', "width": 150},
         {'title': '税率', 'key': 'sl', "width": 100},
@@ -231,7 +274,8 @@ def zyColumnView(request):
 
 
 def zyDataView(request):
-    if request.user.is_anonymous:
+    user = get_user(request)
+    if not user:
         raise Exception("用户未登录")
 
     params = request.GET
@@ -243,7 +287,9 @@ def zyDataView(request):
     ffxm = params.get('ffxm')
     current = params.get('current', 1)
     page_size = params.get('pageSize', 10)
-    print(xh, bmbh, xmbh, ffny_start, ffny_end, ffxm, current, page_size)
+
+    is_download = params.get('isDownload', False)
+    # print(xh, bmbh, xmbh, ffny_start, ffny_end, ffxm, current, page_size)
 
     data, total = zy_query(xh, bmbh, xmbh, ffxm, current, page_size)
     # data = [{
@@ -251,7 +297,6 @@ def zyDataView(request):
     #     'yue': '2',
     #     'xh': '122222',
     #     'xm': '姓名',
-    #     'ffxmdm': '2000',
     #     'zy': '摘要',
     #     'je': '1111',
     #     'se': '11',
@@ -259,7 +304,21 @@ def zyDataView(request):
     #     'sfje': '11',
     #     'bmbh': '111',
     #     'xmbh': '收费区间名称111',
-    # }]
+    # } for i in range(1,10)]
+    # total = 11
+    if is_download:
+        header = ['nian', 'yue', 'xh', 'xm', 'zy', 'je', 'se', 'sl', 'sfje', 'bmbh', 'xmbh']
+        response = HttpResponse()
+        response['Content-Disposition'] = 'attachment; filename="zy_data.csv"'
+        response['Content-Type'] = 'text/csv'
+        response['charset'] = 'utf-8-sig'
+        writer = csv.DictWriter(response, fieldnames=header)
+        writer.writeheader()
+        for item in data:
+            writer.writerow(item)
+
+        return response
+
     res = {
         'total': total,
         'current': current,
