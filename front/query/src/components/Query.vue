@@ -24,14 +24,15 @@
       </Col>
       <Col span="7">
         <span>收费年度</span>
-        <DatePicker type="year" format="yyyy" placeholder="选择缴费年度" v-model="sfnd" style="width: 200px" />
+        <DatePicker type="year" format="yyyy" placeholder="选择缴费年度" v-model="sfnd" style="width: 200px"/>
       </Col>
       <Col span="5">
         <span>是否欠费</span>
         <Checkbox v-model="sfqf">&nbsp</Checkbox>
       </Col>
       <Col>
-        <Button type="primary" @click="query">查询</Button>
+        <Button type="primary" @click="search">查询</Button>
+        <Button type="primary" @click="download" style="margin-left: 5px">下载</Button>
       </Col>
     </Row>
 
@@ -72,6 +73,7 @@ export default {
       sfnd: undefined,
       sfqf: undefined,
       columns: [],
+      isDownload: Boolean,
 
       pagination: {
         current: 1,
@@ -101,8 +103,16 @@ export default {
       }
 
       this.pagination = await getDataApi(
-          this.xh, this.xm, this.bm, rxnd, sfnd, this.sfqf, this.pagination
+          this.xh, this.xm, this.bm, rxnd, sfnd, this.sfqf, this.pagination, this.isDownload
       )
+    },
+    async search() {
+      this.isDownload = false;
+      await this.query();
+    },
+    async download() {
+      this.isDownload = true;
+      await this.query()
     }
   }
 }

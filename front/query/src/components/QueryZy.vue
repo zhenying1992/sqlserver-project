@@ -29,7 +29,8 @@
         <DatePicker type="month" format="yyyy/MM" placeholder="选择结束年月" v-model="ffnyEnd" style="width: 200px"/>
       </Col>
       <Col>
-        <Button type="primary" @click="query">查询</Button>
+        <Button type="primary" @click="search">查询</Button>
+        <Button type="primary" @click="download" style="margin-left: 3px">下载</Button>
       </Col>
     </Row>
 
@@ -43,10 +44,10 @@
           :total="pagination.total"
           :page-size="pagination.size"
           show-sizer
-          @on-change=""
+          @on-change="click"
           @on-prev=""
           @on-next=""
-          @on-page-size-change=""
+          @on-page-size-change="sizeChange"
       />
     </div>
 
@@ -69,6 +70,7 @@ export default {
       ffnyStart: '',
       ffnyEnd: '',
       ffxm: '',
+      isDownload: false,
 
       xms: [],
 
@@ -107,8 +109,25 @@ export default {
       }
 
       this.pagination = await getZyDataApi(
-          this.xh, this.bmbh, this.xmbh, ffnyStart, ffnyEnd, this.ffxm, this.pagination
+          this.xh, this.bmbh, this.xmbh, ffnyStart, ffnyEnd, this.ffxm, this.pagination, this.isDownload
       )
+    },
+    async click(page) {
+      this.pagination.current = page
+      await this.query()
+    },
+    async sizeChange(size) {
+      this.pagination.pageSize = size;
+      this.pagination.current = 1;
+      await this.query()
+    },
+    async search() {
+      this.isDownload = false;
+      await this.query();
+    },
+    async download() {
+      this.isDownload = true;
+      await this.query();
     }
   }
 }
