@@ -3,6 +3,7 @@ from .views.user import loginView, logoutView, changePasswordView, createUserVie
 from .views.task import logView, updateCopyTaskView, updateDeleteTaskView, taskView
 from .views.tool import serverTestView, databaseTestView, copyFileView, deleteLocalFileView, backupDatabaseView
 from .views.system import diskView, cpuView, memoryView, sysView
+from .views.zwzcdz import ZwzcdzView
 
 urlpatterns = [
     path('login', loginView),
@@ -25,4 +26,6 @@ urlpatterns = [
     path('memory', memoryView),
     path('disk', diskView),
     path('sys', sysView),
+
+    path('zwzcdz', ZwzcdzView),
 ]

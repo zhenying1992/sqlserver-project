@@ -33,5 +33,18 @@ class Server(models.Model):
         db_table = 'server'
 
 
+class Zwzcdz(models.Model):
+    kjnd = models.CharField(max_length=4)
+    kjqj = models.CharField(max_length=2)
+    zy = models.CharField(max_length=128)
+    dje = models.FloatField()
+    pzrq = models.CharField(max_length=128)
+    pzbh = models.CharField(max_length=128)
+
+    class Meta:
+        db_table = 'zwzcdz'
+        unique_together = (("pzrq", "pzbh"),)
+
+
 def get_db_server() -> Server:
     return Server.objects.get(type='database')
