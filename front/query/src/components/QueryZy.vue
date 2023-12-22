@@ -18,8 +18,8 @@
     <Row style="margin-top: 10px">
       <Col span="7">
         <span>发放项目</span>
-        <Select v-model="ffxm" style="width:200px">
-          <Option v-for="item in xms" :value="item" :key="item">{{ item }}</Option>
+        <Select v-model="ffxmdm" style="width:200px">
+          <Option v-for="item in xms" :label="item.xxmc" :value="item.id" :key="item.id">{{ item.xmmc }}</Option>
         </Select>
       </Col>
       <Col span="10">
@@ -69,7 +69,7 @@ export default {
       xmbh: '',
       ffnyStart: '',
       ffnyEnd: '',
-      ffxm: '',
+      ffxmdm: '',
       isDownload: false,
 
       xms: [],
@@ -109,7 +109,7 @@ export default {
       }
 
       this.pagination = await getZyDataApi(
-          this.xh, this.bmbh, this.xmbh, ffnyStart, ffnyEnd, this.ffxm, this.pagination, this.isDownload
+          this.xh, this.bmbh, this.xmbh, ffnyStart, ffnyEnd, this.ffxmdm, this.pagination, this.isDownload
       )
     },
     async click(page) {

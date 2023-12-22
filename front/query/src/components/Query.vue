@@ -46,10 +46,8 @@
           :total="pagination.total"
           :page-size="pagination.size"
           show-sizer
-          @on-change="query"
-          @on-prev="query"
-          @on-next="query"
-          @on-page-size-change="query"
+          @on-change="click"
+          @on-page-size-change="clickSize"
       />
     </div>
 
@@ -113,6 +111,15 @@ export default {
     async download() {
       this.isDownload = true;
       await this.query()
+    },
+    async click(page) {
+      this.pagination.current = page;
+      await this.search();
+    },
+    async clickSize(size) {
+      this.pagination.pageSize = size;
+      this.pagination.current = 1;
+      await this.search();
     }
   }
 }

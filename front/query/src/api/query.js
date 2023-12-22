@@ -102,7 +102,7 @@ function getZyColumnApi() {
     return client.get("/zy/column")
 }
 
-function getZyDataApi(xh, bmbh, xmbh, ffnyStart, ffnyEnd, ffxm, pagination, isDownload) {
+function getZyDataApi(xh, bmbh, xmbh, ffnyStart, ffnyEnd, ffxmdm, pagination, isDownload) {
     if (isDownload) {
         return axios.get('/query/api/zy/data', {
             params: {
@@ -111,7 +111,7 @@ function getZyDataApi(xh, bmbh, xmbh, ffnyStart, ffnyEnd, ffxm, pagination, isDo
                 'xmbh': xmbh,
                 'ffnyStart': ffnyStart,
                 'ffnyEnd': ffnyEnd,
-                'ffxm': ffxm,
+                'ffxmdm': ffxmdm,
                 'current': pagination.current,
                 'pageSize': pagination.pageSize,
                 'isDownload': isDownload
@@ -133,7 +133,7 @@ function getZyDataApi(xh, bmbh, xmbh, ffnyStart, ffnyEnd, ffxm, pagination, isDo
             'xmbh': xmbh,
             'ffnyStart': ffnyStart,
             'ffnyEnd': ffnyEnd,
-            'ffxm': ffxm,
+            'ffxmdm': ffxmdm,
             'current': pagination.current,
             'pageSize': pagination.pageSize,
             'isDownload': isDownload
