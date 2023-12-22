@@ -44,14 +44,19 @@ def list_bm():
 
 def list_xm():
     with Transaction() as cursor:
-        cursor.execute("select xmmc from xs_zyfxmdm")
-        res = cursor.fetchall()
-        return [item[0] for item in res]
+        cursor.execute("select id, xmmc from xs_zyfxmdm")
+        res = []
+        for item in cursor.fetchall():
+            res.append({
+                'id': item[0],
+                'name': item[1]
+            })
+        return res
 
 
 def xf_query(xh=None, xm=None, bms=None, rxnd=None, sfnd=None, sfqf=None, current=1, page_size=10):
     with Transaction() as cursor:
-        sql = "select XH, XM, KSH, SFZH, RXND, LXNX, BMDM, BMMC, ZYDM, ZYMC," \
+        sql = "select XH, XM, RXND, LXNX, BMDM, BMMC, ZYDM, ZYMC," \
               "SFQJDM, SFQJMC, SFXMDM, SFXMMC, YJJE, SJJE, TFJE, JMJE, HJJE, QFJE " \
               "from datazz"
 
@@ -92,7 +97,7 @@ def xf_query(xh=None, xm=None, bms=None, rxnd=None, sfnd=None, sfqf=None, curren
         ], total
 
 
-def zy_query(xh, bmbh, xmbh, ffxm, current=1, page_size=10):
+def zy_query(xh, bmbh, xmbh, ffxmdm, ffny_start, ffny_end, current=1, page_size=10):
     with Transaction() as cursor:
         sql = "select nian, yue, xh, xm, zy, je, se, sl, sfje, bmbh, xmbh from xs_zyffb"
         where = ''
@@ -105,8 +110,14 @@ def zy_query(xh, bmbh, xmbh, ffxm, current=1, page_size=10):
         if xmbh:
             where += f' xmbh="{xmbh}"'
 
-        if ffxm:
-            where += f' ffxm="{ffxm}"'
+        if ffxmdm:
+            where += f' ffxmdm="{ffxmdm}"'
+
+        if ffny_start:
+            where += f' nian>="{ffny_start}"'
+
+        if ffny_end:
+            where += f' ffny<="{ffny_end}"'
 
         if where:
             sql = f'{sql} where {where} limit {current}, {page_size}'

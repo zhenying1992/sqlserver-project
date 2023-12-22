@@ -1,6 +1,8 @@
 import csv
+import datetime
 
 import json
+import time
 
 from django.contrib.auth import logout
 from django.contrib.auth.models import User
@@ -23,6 +25,7 @@ def loginView(request):
     if check_password(data['password'], user.password):
         key = uuid.uuid4()
         user.first_name = key
+        user.last_login = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         user.save()
         resp = JsonResponse(data='登陆成功', status=200, safe=False)
         resp.set_cookie('session_key', key)
@@ -105,7 +108,8 @@ def createView(request):
     username = data['username']
     password = data['password']
     try:
-        user = User.objects.using('query').create_user(username=username, password=password)
+        user = User.objects.using('query').create(username=username)
+        user.set_password(password)
         user.save()
     except Exception as ex:
         return JsonResponse(data=str(ex), status=400, safe=False)
@@ -146,16 +150,14 @@ def bmView(request):
 
 
 def xmView(request):
-    # return JsonResponse([], safe=False)
+    # return JsonResponse([{'id': 1, "xmmc": 'aa'}, {'id': 2, "xmmc": "bb"}], safe=False)
     return JsonResponse(list_xm(), safe=False)
 
 
 def columnView(request):
     columns = [
-        {'title': '学号', 'key': 'XH', "width": 100},
+        {'title': '学号', 'key': 'XH', "width": 120},
         {'title': '姓名', 'key': 'XM', "width": 100},
-        {'title': 'KSH', 'key': 'KSH', "width": 100},
-        {'title': '身份证号', 'key': 'SFZH', "width": 200},
         {'title': '入学年度', 'key': 'RXND', "width": 100},
         {'title': '离校年度', 'key': 'LXND', "width": 100},
         {'title': '部门代码', 'key': 'BMDM', "width": 100},
@@ -233,7 +235,7 @@ def dataView(request):
     # }]
     # total = 11
     if is_download:
-        header = ['XH', 'XM', 'KSH', 'SFZH', 'RXND', 'LXND', 'BMDM', 'BMMC', 'ZYDM', 'ZYMC', 'SFQJDM',
+        header = ['XH', 'XM', 'RXND', 'LXND', 'BMDM', 'BMMC', 'ZYDM', 'ZYMC', 'SFQJDM',
                   'SFQJMC', 'SFXMDM', 'SFXMMC', 'YJJE', 'SJJE', 'TFJE', 'JMJE', 'HJJE', 'QFJE']
         response = HttpResponse()
         response['Content-Disposition'] = 'attachment; filename="xf_data.csv"'
@@ -284,14 +286,14 @@ def zyDataView(request):
     xmbh = params.get('xmbh')
     ffny_start = params.get('ffnyStart')
     ffny_end = params.get('ffnyEnd')
-    ffxm = params.get('ffxm')
+    ffxmdm = params.get('ffxmdm')
     current = params.get('current', 1)
     page_size = params.get('pageSize', 10)
 
     is_download = params.get('isDownload', False)
     # print(xh, bmbh, xmbh, ffny_start, ffny_end, ffxm, current, page_size)
 
-    data, total = zy_query(xh, bmbh, xmbh, ffxm, current, page_size)
+    data, total = zy_query(xh, bmbh, xmbh, ffxmdm, ffny_start, ffny_end, current, page_size)
     # data = [{
     #     'nian': '2022',
     #     'yue': '2',
